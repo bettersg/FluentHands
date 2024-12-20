@@ -15,7 +15,7 @@
 }
 
 .heroTitle {
-    font-family: 'Montserrat Alternates', 'Inter';
+    font-family: var(--typeface-brand);
     font-size: 48px;
     font-weight: bold;
 }

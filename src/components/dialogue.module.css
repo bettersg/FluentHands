@@ -1,0 +1,80 @@
+.dialogueContainer {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: black;
+    opacity: 0.3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.dialogue {
+    min-width: 320px;
+    max-width: 360px;
+    background-color: var(--color-primary);
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px;
+    z-index: 2;
+}
+
+.text {
+    padding: 24px;
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.title {
+    width: 100%;
+    color: white;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.desc {
+    color: white;
+    font-size: 14px;
+}
+
+.btnContainer {
+    padding: 24px 8px;
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.btnLeft,.btnRight {
+    min-width: 72px;
+    padding: 10px 24px;
+    font-size: 14px;
+    color: white;
+    border-radius: 2rem;
+    cursor: pointer;
+}
+
+.btnLeft {
+    background-color: #009DD6;
+    border: none;
+}
+
+.btnRight {
+    background-color: transparent;
+    border: 1px solid white;
+}

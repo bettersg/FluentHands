@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Card from "../components/card";
 import styles from './home.module.css';
 

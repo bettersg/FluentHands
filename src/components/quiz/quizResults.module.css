@@ -1,0 +1,24 @@
+.resultsContainer {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.results {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.resultsPara {
+    font-weight: normal;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.btnContainer {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}

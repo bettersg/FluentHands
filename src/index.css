@@ -1,19 +1,48 @@
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
+    font-family: var(--typeface-plain);
+    line-height: 1.4;
+    font-weight: normal;
 }
 
 :root {
-  font-family: "Inter", "Roboto", "Open Sans";
-  line-height: 1.4;
-  font-weight: 400;
+    --typeface-brand: 'Montserrat Alternates', 'Inter';
+    --typeface-plain: "Inter", "Roboto", "Open Sans";
+    --color-primary: #00729C;
+    --color-onsurface: #49454F;
 
-  /* color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    .button {
+        background-color: var(--color-primary);
+        color: #FDFDFD;
+        padding: 1rem;
+        padding-right: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.75rem;
+        border-radius: 1rem;
+        font-size: 20px;
+        border: none;
+        cursor: pointer;
+    }
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; */
+    .button:hover {
+        box-shadow: 0px 6px 10px 4px rgba(0, 0, 0, 15%), 0px 2px 3px 0px rgba(0, 0, 0, 30%);
+        transition: box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1) ;
+    }
+
+    .button.reactIcons {
+        color: white;
+        size: 24px;
+    }
+
+    /* color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; */
 }
