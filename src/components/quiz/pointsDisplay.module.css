@@ -38,3 +38,10 @@
     size: 40px;
     color: #f2f277;
 }
+
+.text {
+    font-size: 25px;
+    background-color: #f2f277;
+    padding: 3px 15px;
+    font-family: var(--md-ref-typeface-brand);
+}

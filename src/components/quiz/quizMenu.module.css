@@ -6,8 +6,11 @@
 
 .quizMenuHeader {
     font-family: var(--md-ref-typeface-brand);
-    color: var(--md-sys-color-primary);
+    color: var(--color-primary);
     font-size: 3rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-align: center;
 }
 
 .quizMenuSubheading {
@@ -21,6 +24,10 @@
     gap: 1rem;
     font-size: 1.5rem;
     line-height: 1.4;
+}
+
+.quizMenuSteps {
+    padding: 0px 35px;
 }
 
 .quizMenuButtonContainer {

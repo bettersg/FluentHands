@@ -11,6 +11,11 @@
     gap: 2rem;
 }
 
+.results img {
+    width: 500px;
+    align-self: center;
+}
+
 .resultsPara {
     font-weight: normal;
     font-size: 2rem;

@@ -1,12 +1,15 @@
 import PropTypes from 'prop-types'
 import styles from './cam.module.css'
 import { useEffect, useRef, useState } from 'react'
+import 'font-awesome/css/font-awesome.min.css';
 
 export default function Cam({evaluateSign}) {
     const [camColor, setCamColor] = useState('black')
     const [feedbackMsg, setFeedbackMsg] = useState('')
+    const [showHint, setShowHint] = useState(false);
     // const [camEnabled, setCamEnabled] = useState(false)
-    let timeoutId
+    let timeoutId;
+    let hintTimeoutId;
     
     // useEffect(() => {
     //     navigator.permissions.query( { name: 'camera' } ).then((cameraPermissions) => {
@@ -108,20 +111,50 @@ export default function Cam({evaluateSign}) {
     const  handleEvaluate = (correct) => {
         evaluateSign(correct)
         sendFeedback(correct)
+
+        if (correct) {
+            setShowHint(false);
+            startHintTimer(); 
+        }
     }
 
     const sendFeedback = (correct) => {
         setCamColor(correct ? 'green' : 'red')
         setFeedbackMsg(correct ? 'Awesome!': 'Oops...  try again!')
+        clearTimeout(timeoutId);
         console.log(timeoutId + 'cleared')
-        clearTimeout(timeoutId)
 
         timeoutId = setTimeout(() => {
-            setCamColor('black')
-            setFeedbackMsg('')
+            setCamColor('black');
+            setFeedbackMsg('');
         }, 5000)
         console.log(timeoutId + 'created')
-    }
+    };
+
+    const startHintTimer = () => {
+        if (hintTimeoutId) {
+            clearTimeout(hintTimeoutId);
+        }
+
+        hintTimeoutId = setTimeout(() => {
+            setShowHint(true);
+            console.log('Hint button should now be visible.');
+        }, 5000);
+    };
+
+    useEffect(() => {
+        startHintTimer();
+
+        return () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+
+            if (hintTimeoutId) {
+                clearTimeout(hintTimeoutId);
+            }
+        };
+    }, []);
 
     return (
     <div className={styles.cam} style={{borderColor: camColor}}>
@@ -136,6 +169,9 @@ export default function Cam({evaluateSign}) {
                 <button className='button' onClick={() => handleEvaluate(true)}>Correct sign</button>
                 <button className='button' onClick={() => handleEvaluate(false)}>Wrong sign</button>
             </div>
+            {showHint && ( <button className={styles.hintBtn} onClick={() => alert('This is a hint!')}>
+                <i className="fa fa-lightbulb-o"></i> Hint! </button>
+            )}
         </div>}
     </div>
     )

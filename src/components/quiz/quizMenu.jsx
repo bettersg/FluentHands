@@ -10,11 +10,13 @@ function QuizMenu({setMode}) {
             <h1 className={styles.quizMenuHeader}>Quiz</h1>
             <div className={styles.quizMenuContent}>
                 <h3 className={styles.quizMenuSubheading}>How to Play</h3>
-                <ol type='1'>
-                    <li>A letter will appear on the screen.</li>
-                    <li>Sign the letter using your hands within 30 seconds.</li>
-                    <li>Your webcam will track your sign and provide instant feedback.</li>
-                </ol>
+                <div className={styles.quizMenuSteps}>
+                    <ol type='1'>
+                        <li>A letter will appear on the screen.</li>
+                        <li>Sign the letter using your hands within 30 seconds.</li>
+                        <li>Your webcam will track your sign and provide instant feedback.</li>
+                    </ol>
+                </div>
                 <p>Ready to Begin? Let’s Test Your Skills!</p>
             </div>
             <div className={styles.quizMenuButtonContainer}>
