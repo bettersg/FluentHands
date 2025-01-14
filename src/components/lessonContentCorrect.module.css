@@ -1,0 +1,28 @@
+.back-box {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    border: 3px solid rgba(0, 201, 67, 1);
+    border-radius: 10px;
+    top: 50px;
+    left: 50px;
+}
+
+.front-box {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background-color: #FFEBCC;
+    border: 3px solid rgba(0, 201, 67, 1);
+    border-radius: 10px;
+    top: 75px;
+    left: 75px;
+    z-index: 1;
+}
+
+.next-button {
+    background-color: #00729C;
+    border-radius: 15px;
+    color: #FDFDFD;
+}
