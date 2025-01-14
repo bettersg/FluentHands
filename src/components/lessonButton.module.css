@@ -1,0 +1,38 @@
+.buttonNotDone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border: 3px solid rgba(0, 157, 214, 1);
+    border-radius: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #00729C;
+    background-color: #ffffff;
+    box-shadow: inset 0px -1px 10px rgba(56, 73, 90, 0.4);
+    margin: 0px 15px;
+}
+
+.buttonDone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border: 3px solid rgba(0, 114, 156, 1);
+    border-radius: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #FFEBCC;
+    background-color: #009DD6;
+    box-shadow: inset 0px -1px 10px rgba(56, 73, 90, 0.4);
+    margin: 0px 15px;
+}
+
+.button .letter {
+    position: relative;
+    z-index: 1;
+  }
