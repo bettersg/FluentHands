@@ -5,15 +5,18 @@ import { useState } from 'react'
 
 export default function QuizPlay({setMode, points, incrementPoints}) {
     const handleEndQuiz = () => setMode('end')
-    const [quizStart, setQuizStart] = useState(false)
-    const evaluateSign = (correct) => {
+    const [capturing, setCapturing] = useState(false)
+    const handleQuizPoints = (correct) => {
         if (correct) incrementPoints()
     }
-        return (
+
+    console.log(capturing)
+    
+    return (
         <div>
-            <Cam evaluateSign = {evaluateSign}/>
-            {!quizStart ? <button className='button' onClick={() => setQuizStart(true)}>I'm ready</button> :
-            <Timer points={points} handleEndQuiz={handleEndQuiz}/>}
+            <Cam evaluateCallback={handleQuizPoints} capturing={capturing} setCapturing={setCapturing}/>
+            {capturing ? <Timer points={points} handleEndQuiz={handleEndQuiz}/>
+            : <button className='button' onClick={() => setCapturing(true)}>I'm ready</button>}
         </div>
   )
 }

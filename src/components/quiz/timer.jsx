@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react'
 
 export default function Timer({points, handleEndQuiz}) {
-    const timeLimitSeconds = 5
+    const timeLimitSeconds = 30
     const [seconds, setSeconds] = useState(timeLimitSeconds);
 
     const deadline = Date.now() + timeLimitSeconds * 1000;
