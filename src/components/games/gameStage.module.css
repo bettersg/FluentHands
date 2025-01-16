@@ -1,0 +1,78 @@
+.gamesStageWithButton {
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    width: 80%;
+}
+
+.gamesStageOverview {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 70%;
+    margin: 0 auto;
+    align-items: center;
+}
+
+
+.gamesStageHeader {
+    font-family: var(--md-ref-typeface-brand);
+    color: var(--md-sys-color-primary);
+    font-size: 3rem;
+    text-align: center;
+}
+
+.gamesStageLettersOverview {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.gamesStageLetterEmpty {
+    height: 94px;
+    width: 59px;
+    background-color: #009DD6;
+    border: 6px solid #009DD6;
+    border-radius: 15px;
+    margin: 0 auto;
+}
+
+.gamesStageLetterCorrect {
+    height: 94px;
+    width: 59px;
+    background-color: #D9FFE5;
+    border-radius: 15px;
+    border: 6px solid #00C943;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: var(--md-ref-typeface-brand);
+    color: var(--md-sys-color-primary);
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.gamesStageLetterWrong {
+    height: 94px;
+    width: 59px;
+    background-color: #EF9593;
+    border-radius: 15px;
+    border: 6px solid #FF2020;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: var(--md-ref-typeface-brand);
+    color: var(--md-sys-color-primary);
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.gamesStageButtonContainer {
+    display: flex;
+    flex-direction: column;
+}
