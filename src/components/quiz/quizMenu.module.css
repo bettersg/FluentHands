@@ -30,6 +30,10 @@
     line-height: 1.4;
 }
 
+.quizMenuSteps {
+    padding: 0px 35px;
+}
+
 .quizMenuButtonContainer {
     display: flex;
     justify-content: end;

@@ -7,7 +7,6 @@ import { FaLightbulb } from "react-icons/fa";
 export default function Cam({evaluateCallback, capturing, setCapturing}) {
     const [camColor, setCamColor] = useState('black')
     const [feedbackMsg, setFeedbackMsg] = useState('')
-    // const [camEnabled, setCamEnabled] = useState(false)
     const [showHint, setShowHint] = useState(false);
     const [timeoutId, setTimeoutId] = useState(null)
     const [hintTimeoutId, setHintTimeoutId] = useState(null)
