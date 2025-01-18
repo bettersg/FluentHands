@@ -11,6 +11,9 @@
     --typeface-plain: "Inter", "Roboto", "Open Sans";
     --color-primary: #00729C;
     --color-onsurface: #49454F;
+    --color-correct: #00C943;
+    --color-wrong: #FF2020;
+    --color-hint: #EB9928;
 
     .button {
         background-color: var(--color-primary);

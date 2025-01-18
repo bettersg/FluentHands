@@ -4,40 +4,47 @@ import { useCallback, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
 import { FaLightbulb } from "react-icons/fa"; 
 
-export default function Cam({evaluateCallback, capturing, setCapturing}) {
-    const [camColor, setCamColor] = useState('black')
+export default function Cam({capturing, setCapturing, evaluateCallback, withHint=true}) {
+    // feedback states: null, correct, wrong, hint
+    const [feedback, setFeedback] = useState(null)
     const [feedbackMsg, setFeedbackMsg] = useState('')
-    const [showHint, setShowHint] = useState(false);
+    const [showHint, setShowHint] = useState(false)
+
+    // setTimeout and setInterval management
     const [timeoutId, setTimeoutId] = useState(null)
     const [hintTimeoutId, setHintTimeoutId] = useState(null)
-    
-    const videoConstraints = {
-        facingMode: 'user',
-        width: { min: 1024, ideal: 1280, max: 1920 },
-        height: { min: 576, ideal: 720, max: 1080 }
-    }
+    const [intervalId, setIntervalId] = useState(null)
 
     const webcamRef = useRef()
-    const mediaRecorderRef = useRef();
-    const [dataChunks, setDataChunks] = useState([]);
+    const videoConstraints = {
+        facingMode: 'user',
+        // width: { min: 1024, ideal: 1280, max: 1920 },
+        // height: { min: 576, ideal: 720, max: 1080 },
+        width: 640,
+        height: 480
+    }
 
+    // placeholder function for CV model API
     const evaluate = (correct) => {
         evaluateCallback(correct)
         sendFeedback(correct)
-        if (correct) {
-            setShowHint(false)
-        } else {
-            startHintTimer(); 
+        if (withHint) {
+            if (correct) {
+                clearHintTimer()
+                setShowHint(false)
+            } else {
+                startHintTimer(); 
+            }
         }
     }
 
     const sendFeedback = (correct) => {
-        setCamColor(correct ? 'green' : 'red')
+        setFeedback(correct ? 'correct' : 'wrong')
         setFeedbackMsg(correct ? 'Awesome!': 'Oops...  try again!')
         clearTimeout(timeoutId)
 
         let timeout = setTimeout(() => {
-            setCamColor('black')
+            setFeedback(null)
             setFeedbackMsg('')
         }, 5000)
         setTimeoutId(timeout)
@@ -47,89 +54,74 @@ export default function Cam({evaluateCallback, capturing, setCapturing}) {
         if (!hintTimeoutId) {
             let timeout = setTimeout(() => {
                 setShowHint(true)
-                setHintTimeoutId(null)
+                setFeedback('hint')
                 console.log('Hint button should now be visible.')
             }, 5000)
             setHintTimeoutId(timeout)
         }
     }
 
+    const clearHintTimer = () => {
+        clearTimeout(hintTimeoutId)
+        setHintTimeoutId(null)
+    }
+
     const handleHintClick = () => {
         setShowHint(false)
+        setFeedback(null)
         alert('This is a hint!')
     }
 
-    const handleStartCapture = useCallback(() => {
-        setCapturing(true);
-        mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-            mimeType: "video/webm"
-        });
-        mediaRecorderRef.current.addEventListener(
-            "dataavailable",
-            handleDataAvailable
-        );
-        mediaRecorderRef.current.start();
-        }, [webcamRef, setCapturing, mediaRecorderRef]);
+    const handleWebcamMount = () => {
+        if (withHint) {
+            startHintTimer()
+        }
+        handleStartCapture()
+    }
 
-        const handleDataAvailable = useCallback(
-        ({ data }) => {
-            if (data.size > 0) {
-                setDataChunks((prev) => prev.concat(data));
+    const handleStartCapture = useCallback(() => {
+        const video = webcamRef.current.video
+        const stream = webcamRef.current.stream
+        const interval = setInterval(() => {
+            if (stream.active) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob)
+                    console.log(url)
+                });
             }
-        },
-            [setDataChunks]
-        );
+        }, 100)
+        setIntervalId(interval)
+    }, [webcamRef])
 
     const handleStopCapture = useCallback(() => {
-        mediaRecorderRef.current.stop();
         setCapturing(false);
-    }, [mediaRecorderRef, webcamRef, setCapturing]);
-
-    const handleEvaluate = useCallback(() => {
-    if (dataChunks.length) {
-        const blob = new Blob(dataChunks, {
-            type: "video/webm"
-        });
-        const stream = blob.stream()
-        console.log(stream)
-    //   for await (const chunk of stream) {
-
-    //   }
-    //   const url = URL.createObjectURL(blob);
-    //   const a = document.createElement("a");
-    //   document.body.appendChild(a);
-    //   a.style = "display: none";
-    //   a.href = url;
-    //   a.download = "react-webcam-stream-capture.webm";
-    //   a.click();
-    //   window.URL.revokeObjectURL(url);
-        setDataChunks([]);
-    }
-    }, [dataChunks]);
-    
-    
+        clearInterval(intervalId)
+        setIntervalId(null)
+    }, [webcamRef, setCapturing]);
 
     return (
-    <div className={styles.cam} style={{borderColor: camColor}}>
-        {/* <video muted width="1024" height='576' ref={videoRef}></video> */}
-        {capturing && <Webcam style={{zIndex: 0}}videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={startHintTimer}/>}
-
-        {<div className={styles.feedbackContainer}>
-            <div className={styles.feedback} style={{borderColor: camColor}}>{feedbackMsg}</div>
-            <div className={styles.btnContainer}>
-                <button className='button' onClick={() => evaluate(true)}>Correct sign</button>
-                <button className='button' onClick={() => evaluate(false)}>Wrong sign</button>
+        <div className={styles.cam} style={{borderColor: feedback ? `var(--color-${feedback})`: 'black'}}>
+            {capturing && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount}/>}
+            <div className={styles.feedbackContainer}>
+                {feedbackMsg && <div className={styles.feedback} style={{borderColor: feedback ? `var(--color-${feedback})` : 'black'}}>{feedbackMsg}</div>}
+                <div className={styles.btnContainer}>
+                    <button className='button' onClick={() => evaluate(true)}>Correct sign</button>
+                    <button className='button' onClick={() => evaluate(false)}>Wrong sign</button>
+                </div>
+                {showHint && <button className={styles.hintBtn} onClick={handleHintClick}>
+                    <FaLightbulb/>Hint!</button>
+                }
             </div>
-            {showHint && ( <button className={styles.hintBtn} onClick={handleHintClick}>
-                <FaLightbulb/> Hint! </button>
-            )}
-        </div>}
-    </div>
+        </div>
     )
 }
 
 Cam.propTypes = {
-    evaluateCallback: PropTypes.func.isRequired,
     capturing: PropTypes.bool.isRequired,
-    setCapturing: PropTypes.func.isRequired
+    setCapturing: PropTypes.func.isRequired,
+    evaluateCallback: PropTypes.func.isRequired,
+    withHint: PropTypes.bool
 }

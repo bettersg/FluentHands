@@ -10,6 +10,8 @@ import { useNavigate } from "react-router"
 export default function Quiz() {
     const navigate = useNavigate()
     const [promptMsg, setPromptMsg] = useState(true)
+
+    // quiz states: menu, play, results
     const [quizMode, setQuizMode] = useState('menu')
     const [points, setPoints] = useState(0)
     const incrementPoints = () => setPoints((prevPoints) => prevPoints + 1)
@@ -27,8 +29,8 @@ export default function Quiz() {
         <Header/>
         {promptMsg && <Dialogue {...dialogueProps}/>}
         {quizMode == 'menu' && <QuizMenu setMode={setQuizMode}/>}
-        {(quizMode == 'quiz') && <QuizPlay mode={quizMode} setMode={setQuizMode} points={points} incrementPoints={incrementPoints}/>}
-        {quizMode == 'end' && <QuizResults setMode={setQuizMode} points={points} setPoints={setPoints}/>}
+        {(quizMode == 'play') && <QuizPlay mode={quizMode} setMode={setQuizMode} points={points} incrementPoints={incrementPoints}/>}
+        {quizMode == 'results' && <QuizResults setMode={setQuizMode} points={points} setPoints={setPoints}/>}
     </>
     )
 }

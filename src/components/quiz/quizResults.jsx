@@ -11,7 +11,7 @@ export default function QuizResults({setMode, points, setPoints}) {
   const handleBack = () => navigate('/')
   const handleRetry = () => {
     setPoints(0)
-    setMode('quiz')
+    setMode('play')
   }
 
   return (

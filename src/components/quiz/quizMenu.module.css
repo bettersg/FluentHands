@@ -5,16 +5,13 @@
 }
 
 .quizMenuHeader {
-    font-family: var(--typeface-brand);
     color: var(--color-primary);
     font-size: 3rem;
-    text-decoration: underline;
-    text-underline-offset: 3px;
     text-align: center;
 }
 
 .quizMenuSteps {
-    padding: 0px 35px;
+    padding-left: 35px;
 }
 
 .quizMenuSubheading {
