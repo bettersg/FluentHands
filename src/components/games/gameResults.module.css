@@ -1,0 +1,66 @@
+.gamesResultsWithButton {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.gamesResultsOverview {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 90%;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+.gamesResultsHeader {
+    font-family: var(--md-ref-typeface-brand);
+    color: var(--md-sys-color-primary);
+    font-size: 3rem;
+    text-align: center;
+}
+
+.gamesResultsLettersOverview {
+    display: grid;
+    grid-template-columns: repeat(5, 220px);
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.gamesResultsLetterContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.gamesResultsLetter {
+    height: 94px;
+    width: 59px;
+    background-color: #D9FFE5;
+    border-radius: 15px;
+    border: 6px solid #00C943;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: var(--md-ref-typeface-brand);
+    color: var(--md-sys-color-primary);
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.gamesResultsButtonContainer {
+    bottom: 10%;
+    right: 10%;
+    position: fixed;
+}
