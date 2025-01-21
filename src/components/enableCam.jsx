@@ -12,11 +12,11 @@ export default function EnableCam({desc, enableHandler, denyHandler}) {
         rightHandler: denyHandler
     }
     return (
-    <Dialogue {...dialogueProps}>
-        <div style={{width: '72px', height: '72px', backgroundColor: 'white', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            <IoMdCamera color='var(--color-primary)' size='32px'/>
-        </div>
-    </Dialogue>
+        <Dialogue {...dialogueProps}>
+            <div style={{width: '72px', height: '72px', backgroundColor: 'white', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <IoMdCamera color='var(--color-primary)' size='32px'/>
+            </div>
+        </Dialogue>
     )
 }
 
