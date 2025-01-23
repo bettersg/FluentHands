@@ -21,6 +21,20 @@ export default function LessonMenu({ setMode }) {
 
   const navigate = useNavigate();
 
+  // idk how correct this is back button would help a lot to check
+  // need to be called in lessonContent.jsx also
+  const markLetterDone = (letter) => {
+    const index = done.findIndex((item) => item.letter === letter);
+
+    if(index !== -1) {
+      setDone((letterSet) => {
+        letterSet.map((item, currentIndex) => {
+          currentIndex === index ? { ...item, value: true } : item
+        })
+      })
+    }
+  }
+
   function toggleNavigate(id) {
     const selectedLetter = done[id];
     if (selectedLetter) {
