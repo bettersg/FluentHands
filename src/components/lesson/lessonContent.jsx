@@ -71,6 +71,14 @@ export default function LessonContent({ setMode }) {
         }, 5000);  
     };
 
+    const nextPage = (currentLetter) => {
+        const nextCharAscii = currentLetter.charCodeAt(0) + 1;
+        if (nextCharAscii <= 90) {
+            const nextChar = String.fromCharCode(nextCharAscii);
+            navigate(`/lessons/${nextChar}`)
+        }
+    }
+
     // ! NOT WORKING YET
     // const markAsDone = (letter) => {
     //     const letterIndex = done.findIndex(item => item.letter === letter);
@@ -100,13 +108,13 @@ export default function LessonContent({ setMode }) {
                     />
                     <div className={styles.buttonContainer}>
                         {showNextButton && (
-                            <button className={styles.nextBtn} onClick={() => alert("Next Alphabet!")}>Next</button>
+                            <button className={styles.nextBtn} onClick={() => nextPage(letter)}>Next</button>
                         )}
                         {showTryAgainButton && (
                             <button className={styles.tryAgainBtn} onClick={() => alert("Try Again!")}>Try Again</button>
                         )}
                         {showSkipButton && (
-                            <button className={styles.skipBtn} onClick={() => alert("Skip Alphabet!")}>Skip</button>
+                            <button className={styles.skipBtn} onClick={() => nextPage(letter)}>Skip</button>
                         )}
                     </div>
                 </>
