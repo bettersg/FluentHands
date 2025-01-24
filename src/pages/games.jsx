@@ -5,7 +5,6 @@ import Dialogue from "../components/dialogue"
 import GamesMenu from "../components/games/gameMenu"
 import GamesInstructions from "../components/games/gameInstructions"
 import GamesStage from "../components/games/gameStage"
-import GamesResults from "../components/games/gameResults"
 import GamesEnd from "../components/games/gameEnd"
 
 export default function Games() {
@@ -30,7 +29,6 @@ export default function Games() {
             {gameMode == 'menu' && <GamesMenu setMode={setGameMode}/>}
             {gameMode == 'instructions' && <GamesInstructions setMode={setGameMode}/>}
             {gameMode == 'stage' && <GamesStage setMode={setGameMode}/>}
-            {gameMode == 'results' && <GamesResults setMode={setGameMode}/>}
             {gameMode == 'end' && <GamesEnd setMode={setGameMode}/>}
         </>
 
