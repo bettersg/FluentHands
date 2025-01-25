@@ -3,15 +3,11 @@ import PropTypes from 'prop-types';
 import Cam from '../cam';
 import { useParams } from "react-router-dom";
 import styles from './lessonContent.module.css';
-import EnableCam from '../enableCam';
 import { useNavigate } from "react-router";
 
 export default function LessonContent({ setMode }) {
     const { letter } = useParams(); 
-    const [showDialogue, setShowDialogue] = useState(false);
     const [capturing, setCapturing] = useState(true);
-    const [feedback, setFeedback] = useState(null); 
-    const [feedbackMsg, setFeedbackMsg] = useState(''); 
 
     const [showNextButton, setShowNextButton] = useState(false);
     const [showTryAgainButton, setShowTryAgainButton] = useState(false);
@@ -19,41 +15,7 @@ export default function LessonContent({ setMode }) {
 
     const navigate = useNavigate();
 
-    // Enable cam with sessionStorage
-    useEffect(() => {
-        const hasSeenPopup = sessionStorage.getItem('enableCamPromptShown');
-        if (!hasSeenPopup) {
-            setShowDialogue(true); 
-        }
-
-        const handleBeforeUnload = () => {
-            sessionStorage.removeItem('enableCamPromptShown');
-        };
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, []);
-
-    const handleEnable = () => {
-        sessionStorage.setItem('enableCamPromptShown', 'true');
-        setShowDialogue(false);
-        console.log("Camera permissions enabled");
-    };
-
-    const handleDeny = () => {
-        sessionStorage.setItem('enableCamPromptShown', 'true');
-        setShowDialogue(false);
-        console.log("Camera permissions denied");
-    };
-
     const evaluateCallback = (correct) => {
-        const message = correct ? 'Awesome!' : 'Oops... try again!';
-        setFeedback(correct ? 'correct' : 'wrong');
-        setFeedbackMsg(message);
-
         if (correct) {
             setShowNextButton(true); // Show next button when answer is correct
             setShowTryAgainButton(false); // Hide Try Again button
@@ -64,11 +26,6 @@ export default function LessonContent({ setMode }) {
             setShowTryAgainButton(true); // Show Try Again button
             setShowSkipButton(true); // Show Skip button
         }
-
-        setTimeout(() => {
-            setFeedback(null);
-            setFeedbackMsg('');
-        }, 5000);  
     };
 
     const nextPage = (currentLetter) => {
@@ -95,41 +52,24 @@ export default function LessonContent({ setMode }) {
 
     return (
         <div className={styles.container}>
-            {!showDialogue && (
-                <>
-                    <h1 className={styles.header}>Sign '{letter}'</h1>
-                    <Cam 
-                        capturing={capturing} 
-                        setCapturing={setCapturing} 
-                        evaluateCallback={evaluateCallback} 
-                        feedback={feedback}
-                        feedbackMsg={feedbackMsg}
-                        withHint={false}
-                    />
-                    <div className={styles.buttonContainer}>
-                        {showNextButton && (
-                            <button className={styles.nextBtn} onClick={() => nextPage(letter)}>Next</button>
-                        )}
-                        {showTryAgainButton && (
-                            <button className={styles.tryAgainBtn} onClick={() => alert("Try Again!")}>Try Again</button>
-                        )}
-                        {showSkipButton && (
-                            <button className={styles.skipBtn} onClick={() => nextPage(letter)}>Skip</button>
-                        )}
-                    </div>
-                </>
-            
-            )}
-    
-            {showDialogue && (
-                <div className={styles.lessonDialogue}>
-                    <EnableCam 
-                        desc="To proceed, please enable camera permissions."
-                        enableHandler={handleEnable}
-                        denyHandler={handleDeny}
-                    />
-                </div>
-            )}
+            <h1 className={styles.header}>Sign '{letter}'</h1>
+            <Cam 
+                capturing={capturing} 
+                setCapturing={setCapturing} 
+                evaluateCallback={evaluateCallback} 
+                withHint={false}
+            />
+            <div className={styles.buttonContainer}>
+                {showNextButton && (
+                    <button className={styles.nextBtn} onClick={() => nextPage(letter)}>Next</button>
+                )}
+                {showTryAgainButton && (
+                    <button className={styles.tryAgainBtn} onClick={() => alert("Try Again!")}>Try Again</button>
+                )}
+                {showSkipButton && (
+                    <button className={styles.skipBtn} onClick={() => nextPage(letter)}>Skip</button>
+                )}
+            </div>
         </div>
     );
 }
