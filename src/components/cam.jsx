@@ -132,6 +132,21 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
             });
 
             console.log("Server Response:", response.data);
+            // load respnse object
+
+            const modelResponse = response.data;
+            console.log(modelResponse["majority_letter"]);
+
+            // if letter is O then correct else wrong
+            if (modelResponse["majority_letter"] === "O") {
+                evaluate(true);
+            } else {
+                evaluate(false);
+            }
+
+            // TODO: Evaluate the response dynamically instead of hardcoding
+
+
         } catch (error) {
             console.error("Error sending batch:", error.response?.data || error.message);
         }
@@ -148,10 +163,10 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
             {capturing && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} />}
             <div className={styles.feedbackContainer}>
                 {feedbackMsg && <div className={styles.feedback} style={{ borderColor: feedback ? `var(--color-${feedback})` : 'black' }}>{feedbackMsg}</div>}
-                <div className={styles.btnContainer}>
+                {/* <div className={styles.btnContainer}>
                     <button className='button' onClick={() => evaluate(true)}>Correct sign</button>
                     <button className='button' onClick={() => evaluate(false)}>Wrong sign</button>
-                </div>
+                </div> */}
                 {showHint && <button className={styles.hintBtn} onClick={handleHintClick}>
                     <FaLightbulb />Hint!</button>
                 }
