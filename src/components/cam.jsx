@@ -161,8 +161,8 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
     }, [webcamRef, setCapturing]);
 
     return (
-        <div className={styles.cam} style={{ borderColor: feedback ? `var(--color-${feedback})` : 'black' }}>
-            {capturing && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} />}
+        <div className={styles.cam} style={{ borderColor: feedback ? `var(--color-${feedback})` : 'white' }}>
+            {capturing && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} style={{borderRadius: "20px" }}/>}
             <div className={styles.feedbackContainer}>
                 {feedbackMsg && <div className={styles.feedback} style={{ borderColor: feedback ? `var(--color-${feedback})` : 'black' }}>{feedbackMsg}</div>}
                 {/* <div className={styles.btnContainer}>
