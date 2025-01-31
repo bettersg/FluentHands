@@ -42,7 +42,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
 
     const sendFeedback = (correct) => {
         setFeedback(correct ? 'correct' : 'wrong');
-        setFeedbackMsg(correct ? 'Awesome!' : 'Oops... try again!');
+        setFeedbackMsg(correct ? 'Awesome, hold it there!' : 'Keep Trying!');
         clearTimeout(timeoutId);
 
         let timeout = setTimeout(() => {

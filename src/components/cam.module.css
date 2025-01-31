@@ -49,6 +49,9 @@ video {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    top: 2%; /* Adjust this value for relative vertical positioning */
+    left: 2%; /* Adjust this value for relative horizontal positioning */
 }
 
 .btnContainer {
