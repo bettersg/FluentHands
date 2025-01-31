@@ -6,6 +6,8 @@ import { FaLightbulb } from "react-icons/fa";
 import axios from 'axios';
 
 export default function Cam({ capturing, setCapturing, evaluateCallback, withHint = true }) {
+    // every time evaluateCallback is called on a correct sign, increment points
+
     // Feedback states: null, correct, wrong, hint
     const [feedback, setFeedback] = useState(null);
     const [feedbackMsg, setFeedbackMsg] = useState('');
@@ -42,7 +44,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
 
     const sendFeedback = (correct) => {
         setFeedback(correct ? 'correct' : 'wrong');
-        setFeedbackMsg(correct ? 'Awesome, hold it there!' : 'Keep Trying!');
+        setFeedbackMsg(correct ? 'Awesome, hold it there!' : 'Not quite!');
         clearTimeout(timeoutId);
 
         let timeout = setTimeout(() => {
@@ -56,7 +58,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
         if (!hintTimeoutId) {
             let timeout = setTimeout(() => {
                 setShowHint(true);
-                setFeedback('hint');
+                // setFeedback('hint');
                 console.log('Hint button should now be visible.');
             }, 5000);
             setHintTimeoutId(timeout);
@@ -112,7 +114,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
                     console.warn("Skipping frame: Video dimensions are still 0.");
                 }
             }
-        }, 100); // Capture a frame every 100ms
+        }, 200); // Capture a frame every 200ms so 5 frames per second will be sent
 
         setIntervalId(interval);
     }, [webcamRef]);
@@ -135,17 +137,17 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
             // load respnse object
 
             const modelResponse = response.data;
-            console.log(modelResponse["majority_letter"]);
+            var majorityLetter = modelResponse["majority_letter"];
 
             // if letter is O then correct else wrong
-            if (modelResponse["majority_letter"] === "O") {
+            if (majorityLetter === null) {
+                setFeedback(null);
+                setFeedbackMsg('');
+            } else if (majorityLetter === "O") { // TODO: pass the correct letter from parent
                 evaluate(true);
             } else {
                 evaluate(false);
             }
-
-            // TODO: Evaluate the response dynamically instead of hardcoding
-
 
         } catch (error) {
             console.error("Error sending batch:", error.response?.data || error.message);
