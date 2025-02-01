@@ -46,12 +46,11 @@ export default function LessonMenu({ setMode }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', marginTop: '50px' }}>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-        <span style={{ color: '#00729C', fontSize: '30px', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '20px' }}>
+        <span style={{ color: '#00729C', fontSize: '45px', fontWeight: '600', marginBottom: '20px' }}>
           Learn the Alphabets
         </span>
       </div>
 
-      {/* Loop over rows array */}
       {[row1, row2, row3, row4, row5, row6].map((row, rowIndex) => (
         <div key={rowIndex} style={{ display: 'flex', flexDirection: 'row', padding: '10px 57px' }}>
           {row.map((id) => (
