@@ -44,9 +44,9 @@ export default function LessonMenu({ setMode }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', marginTop: '50px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', gap: '10px' }}>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-        <span style={{ color: '#00729C', fontSize: '45px', fontWeight: '600', marginBottom: '20px' }}>
+        <span style={{ color: '#00729C', fontSize: '45px', fontWeight: '600' }}>
           Learn the Alphabets
         </span>
       </div>

@@ -4,6 +4,7 @@ import Cam from '../cam';
 import { useParams } from "react-router-dom";
 import styles from './lessonContent.module.css';
 import { useNavigate } from "react-router";
+import Header from "../header"
 
 export default function LessonContent({ setMode }) {
     const { letter } = useParams(); 
@@ -51,26 +52,29 @@ export default function LessonContent({ setMode }) {
 
 
     return (
-        <div className={styles.container}>
-            <h1 className={styles.header}>Sign '{letter}'</h1>
-            <Cam 
-                capturing={capturing} 
-                setCapturing={setCapturing} 
-                evaluateCallback={evaluateCallback} 
-                withHint={false}
-            />
-            <div className={styles.buttonContainer}>
-                {showNextButton && (
-                    <button className={styles.nextBtn} onClick={() => nextPage(letter)}>Next</button>
-                )}
-                {showTryAgainButton && (
-                    <button className={styles.tryAgainBtn} onClick={() => alert("Try Again!")}>Try Again</button>
-                )}
-                {showSkipButton && (
-                    <button className={styles.skipBtn} onClick={() => nextPage(letter)}>Skip</button>
-                )}
+        <>
+            <Header/>
+            <div className={styles.container}>
+                <h1 className={styles.header}>Sign &apos;{letter}&apos;</h1>
+                <Cam 
+                    capturing={capturing} 
+                    setCapturing={setCapturing} 
+                    evaluateCallback={evaluateCallback} 
+                    withHint={false}
+                />
+                <div className={styles.buttonContainer}>
+                    {showNextButton && (
+                        <button className={styles.nextBtn} onClick={() => nextPage(letter)}>Next</button>
+                    )}
+                    {showTryAgainButton && (
+                        <button className={styles.tryAgainBtn} onClick={() => alert("Try Again!")}>Try Again</button>
+                    )}
+                    {showSkipButton && (
+                        <button className={styles.skipBtn} onClick={() => nextPage(letter)}>Skip</button>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
