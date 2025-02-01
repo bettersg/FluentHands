@@ -1,0 +1,30 @@
+.heading {
+    color: #00729C;
+    font-size: 45px;
+    font-weight: 600;
+}
+
+.firstLayer {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 50px;
+    gap: 40px;
+}
+
+.secLayer{
+    display: flex;
+    justify-content: center;
+}
+
+.thirdLayer {
+    flex-grow: 1;
+    max-width: 90vw;
+    width: 100%;
+    display: grid;
+    gap: 30px;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    grid-auto-rows: minmax(70px, auto);
+}

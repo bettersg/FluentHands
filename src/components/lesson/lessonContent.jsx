@@ -16,12 +16,26 @@ export default function LessonContent({ setMode }) {
 
     const navigate = useNavigate();
 
+    const [done, setDone] = useState(() => {
+        const storedDone = localStorage.getItem('fluentHands');
+        return storedDone ? JSON.parse(storedDone) : {};
+      });
+
+    // Check if all letter is true
+    const checkAllDone = () => {
+        return Object.values(done).every(value => value === true);
+    };
+
+
     const evaluateCallback = (correct) => {
         if (correct) {
             setShowNextButton(true); // Show next button when answer is correct
             setShowTryAgainButton(false); // Hide Try Again button
             setShowSkipButton(false); // Hide Skip button
-
+            // Update current letter state
+            const updatedDone = { ...done, [letter]: true };
+            setDone(updatedDone); 
+            localStorage.setItem('fluentHands', JSON.stringify(updatedDone)); 
         } else {
             setShowNextButton(false); // Hide Next button
             setShowTryAgainButton(true); // Show Try Again button
@@ -36,20 +50,6 @@ export default function LessonContent({ setMode }) {
             navigate(`/lessons/${nextChar}`)
         }
     }
-
-    // ! NOT WORKING YET
-    // const markAsDone = (letter) => {
-    //     const letterIndex = done.findIndex(item => item.letter === letter);
-    //     console.log('Letter index in done array:', letterIndex);
-    //     if (letterIndex !== -1) {
-    //         setDone((prevDone) =>
-    //             prevDone.map((item, index) =>
-    //                 index === letterIndex ? { ...item, value: true } : item
-    //             )
-    //         );
-    //     }
-    // };
-
 
     return (
         <>
