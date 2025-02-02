@@ -22,7 +22,6 @@ export default function Games() {
         withModal: true
     }
 
-
     return (
         <>
             <Header />

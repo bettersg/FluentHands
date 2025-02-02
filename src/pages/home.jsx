@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router";
 import Card from "../components/card";
 import styles from './home.module.css';
+import { logEvent } from "firebase/analytics";
+import { analytics } from "../main";
 
 export default function Home() {
     const navigate = useNavigate()
@@ -11,7 +13,10 @@ export default function Home() {
             alt: 'woman holding a pen in a virtual conference call ',
             title: 'Lessons (Easy)',
             desc: 'Get started with the basics!',
-            click: () => navigate('/lessons')
+            click: () => {
+                navigate('/lessons')
+                logEvent(analytics, 'select_content', {content_type: 'lessons'})
+            }
 
         },
         {
@@ -19,14 +24,20 @@ export default function Home() {
             alt: 'woman clicking on a website start button, launching a rocket',
             title: 'Quiz (Medium)',
             desc: 'Challenge yourself with our interactive quiz!',
-            click: () => navigate('/quiz')
+            click: () => {
+                navigate('/quiz')
+                logEvent(analytics, 'select_content', {content_type: 'quiz'})
+            }
         },
         {
             src: './games.svg',
             alt: 'boy sitting on a chair playing a video game',
             title: 'Games (Hard)',
             desc: 'Put your SGSL skills to the test!',
-            click: () => navigate('/games')
+            click: () => {
+                navigate('/games')
+                logEvent(analytics, 'select_content', {content_type: 'quiz'})
+            }
         }
     ]
     return (
