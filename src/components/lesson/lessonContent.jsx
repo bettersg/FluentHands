@@ -7,6 +7,8 @@ import { useNavigate } from "react-router";
 import { GoChevronLeft } from "react-icons/go";
 import Header from "../header"
 
+const STORAGE_KEY = 'fluentHands';
+
 export default function LessonContent({ setMode }) {
     const { letter } = useParams(); 
     const [capturing, setCapturing] = useState(true);
@@ -18,8 +20,8 @@ export default function LessonContent({ setMode }) {
     const navigate = useNavigate();
 
     const [done, setDone] = useState(() => {
-        const storedDone = localStorage.getItem('fluentHands');
-        return storedDone ? JSON.parse(storedDone) : {};
+        const storedData = localStorage.getItem(STORAGE_KEY);
+        return storedData ? JSON.parse(storedData).data : {};
     });
 
     // Check if the letter is between 'A' and 'Z'
@@ -42,7 +44,7 @@ export default function LessonContent({ setMode }) {
             // Update current letter state
             const updatedDone = { ...done, [letter]: true };
             setDone(updatedDone); 
-            localStorage.setItem('fluentHands', JSON.stringify(updatedDone));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: "1.0", data: updatedDone }));
 
             if(checkAllDone()){
                 setMode('end');
