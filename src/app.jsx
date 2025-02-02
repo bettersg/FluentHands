@@ -15,8 +15,8 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/quiz' element={<Quiz />} />
-        <Route path='/lessons' element={<Lessons />} />
-        <Route path="/lessons/:letter" element={<LessonContent />} />
+        <Route path='/lessons/*' element={<Lessons />} />
+        <Route path="/lessons/:letter" Component={LessonContent} />
         <Route path='/games' element={<Games />} />
         <Route path='*' element={<NotFound />} />
       </Routes>

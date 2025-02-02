@@ -35,8 +35,11 @@ const defaultDone = {
 
 export default function LessonMenu({ setMode }) {
   const [done, setDone] = useState(defaultDone);
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('setMode in LessonMenu:', setMode); 
+  }, [setMode]);
 
   useEffect(() => {
     let doneStr = window.localStorage.getItem('fluentHands')

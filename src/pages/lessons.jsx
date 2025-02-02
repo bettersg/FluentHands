@@ -12,11 +12,13 @@ export default function Lessons() {
   return (
     <>
       <Header/>
-      {lessonMode == 'menu' && <LessonMenu setMode={setLessonMode}/>}
+      {lessonMode === 'menu' && <LessonMenu setMode={setLessonMode} />}
       <Routes>
-        <Route path="lessons/:letter" element={<LessonContent setMode={setLessonMode} />} />
+        {lessonMode === 'lesson' && (
+          <Route path="lessons/:letter" element={<LessonContent setMode={setLessonMode} />} />
+        )}
       </Routes>
-      {lessonMode == 'end' && <LessonResult setMode={setLessonMode}/>}
+      {lessonMode === 'end' && <LessonResult setMode={setLessonMode}/>}
     </>
-    )
+  )
 }
