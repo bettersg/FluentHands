@@ -9,7 +9,8 @@ export default function Home() {
         {
             src: './lessons.svg',
             alt: 'woman holding a pen in a virtual conference call ',
-            title: 'Lessons (Easy)',
+            difficulty: 'Easy',
+            title: 'Lessons',
             desc: 'Get started with the basics!',
             click: () => navigate('/lessons')
 
@@ -17,14 +18,16 @@ export default function Home() {
         {
             src: './quiz.svg',
             alt: 'woman clicking on a website start button, launching a rocket',
-            title: 'Quiz (Medium)',
+            difficulty: 'Medium',
+            title: 'Quiz',
             desc: 'Challenge yourself with our interactive quiz!',
             click: () => navigate('/quiz')
         },
         {
             src: './games.svg',
             alt: 'boy sitting on a chair playing a video game',
-            title: 'Games (Hard)',
+            difficulty: 'Hard',
+            title: 'Games',
             desc: 'Put your SGSL skills to the test!',
             click: () => navigate('/games')
         }

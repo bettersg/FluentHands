@@ -1,0 +1,19 @@
+.interface {
+    width: 100%;
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info {
+    font-size: 32px;
+}
+
+.instruction {
+    position: absolute;
+    width: 100%;
+    font-size: 42px;
+    font-weight: 600;
+    text-align: center;
+}
