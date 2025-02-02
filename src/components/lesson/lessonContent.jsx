@@ -26,6 +26,12 @@ export default function LessonContent({ setMode }) {
         return Object.values(done).every(value => value === true);
     };
 
+    useEffect(() => {
+        if (checkAllDone()) {
+            console.log("All letters completed! Navigating to result...");
+            localStorage.setItem('hasCompletedAllLessons', 'true');
+        }
+    }, [done, setMode]);
 
     const evaluateCallback = (correct) => {
         if (correct) {
@@ -35,7 +41,8 @@ export default function LessonContent({ setMode }) {
             // Update current letter state
             const updatedDone = { ...done, [letter]: true };
             setDone(updatedDone); 
-            localStorage.setItem('fluentHands', JSON.stringify(updatedDone)); 
+            localStorage.setItem('fluentHands', JSON.stringify(updatedDone));
+            
         } else {
             setShowNextButton(false); // Hide Next button
             setShowTryAgainButton(true); // Show Try Again button

@@ -34,7 +34,6 @@ const defaultDone = {
 }
 
 export default function LessonMenu({ setMode }) {
-
   const [done, setDone] = useState(defaultDone);
 
   const navigate = useNavigate();
@@ -47,10 +46,10 @@ export default function LessonMenu({ setMode }) {
     }
   }, []);
 
-  useEffect(() => {
-    // Write the done state back to localStorage whenever it changes
-    window.localStorage.setItem('fluentHands', JSON.stringify(done));
-  }, [done]);
+  // useEffect(() => {
+  //   // Write the done state back to localStorage whenever it changes
+  //   window.localStorage.setItem('fluentHands', JSON.stringify(done));
+  // }, [done]);
 
   function toggleNavigate(letter) {
     setMode('lesson');
