@@ -4,7 +4,7 @@ import styles from './home.module.css';
 
 export default function Home() {
     const navigate = useNavigate()
-    const heroDescText = 'Strengthen your Singapore Sign Language skills through interactive learning. Whether you&#39;re just starting or looking to test your knowledge, we have the perfect options for you'
+    const heroDescText = "Strengthen your Singapore Sign Language skills through interactive learning. Whether you're just starting or looking to test your knowledge, we have the perfect options for you"
     const cardContents = [
         {
             src: './lessons.svg',
