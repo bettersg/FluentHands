@@ -22,6 +22,14 @@ export default function LessonContent({ setMode }) {
         return storedDone ? JSON.parse(storedDone) : {};
     });
 
+    // Check if the letter is between 'A' and 'Z'
+    useEffect(() => {
+        if (!/^[A-Z]$/.test(letter)) {
+            navigate('/*', { replace: true });
+        }
+    }, [letter, navigate])
+
+    // Check if all letter is alr achieved
     const checkAllDone = () => {
         return Object.values(done).every(value => value === true);
     };
@@ -56,6 +64,11 @@ export default function LessonContent({ setMode }) {
         }
     }
 
+    const backLetter = () => {
+        setMode('menu');
+        navigate('/lessons');
+    }
+
     return (
         <>
             <Header/>
@@ -69,7 +82,7 @@ export default function LessonContent({ setMode }) {
                 />
                 <div className={styles.buttonContainer}>
                     {showBackButton && (
-                        <button className={styles.backBtn} onClick={() => navigate('/lessons')}><GoChevronLeft size={12}/>All Letters</button>
+                        <button className={styles.backBtn} onClick={backLetter}><GoChevronLeft size={12}/>All Letters</button>
                     )}
                     {showNextButton && (
                         <button className={styles.nextBtn} onClick={() => nextPage(letter)}>Next</button>

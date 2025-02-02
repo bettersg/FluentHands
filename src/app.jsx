@@ -16,7 +16,6 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/quiz' element={<Quiz />} />
         <Route path='/lessons/*' element={<Lessons />} />
-        <Route path="/lessons/:letter" Component={LessonContent} />
         <Route path='/games' element={<Games />} />
         <Route path='*' element={<NotFound />} />
       </Routes>

@@ -38,10 +38,6 @@ export default function LessonMenu({ setMode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('setMode in LessonMenu:', setMode); 
-  }, [setMode]);
-
-  useEffect(() => {
     let doneStr = window.localStorage.getItem('fluentHands')
     if (doneStr) {
       let doneObj = JSON.parse(window.localStorage.getItem('fluentHands'))
@@ -49,8 +45,9 @@ export default function LessonMenu({ setMode }) {
     }
   }, []);
 
+
   // useEffect(() => {
-  //   // Write the done state back to localStorage whenever it changes
+  //   // Write the done state back to localStorage whenever it changes (just for restarting purpose!)
   //   window.localStorage.setItem('fluentHands', JSON.stringify(done));
   // }, [done]);
 
