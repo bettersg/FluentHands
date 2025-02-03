@@ -21,7 +21,7 @@
 
 .gamesEndButtonsContainer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
     margin-top: 20px;
 }

@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types'
 import styles from './gameInstructions.module.css'
-import Camera from './camera'
-import { useEffect } from 'react';
+import Cam from '../cam'
 
 
 
 function GamesInstructions({ setMode }) {
     const handleStartGame = () => setMode('stage')
 
+    const evaluateCallback = (correct) => {
+    };
+
     return (
         <div>
+
             <div className={styles.gamesInstructionsOverview}>
 
                 <div className={styles.gamesInstructionsMenu}>
@@ -30,30 +33,39 @@ function GamesInstructions({ setMode }) {
 
                 <div className={styles.gamesInstructionsWebcamOverview}>
                     <p>
-                        Place your hand in the orange box (your webcam), so it is visible on screen.
+                        Place your hand in the box (your webcam), so it is visible on screen.
                         Click anywhere to start.
                     </p>
 
-                    <Camera></Camera>                    
+                    <div className={styles.cameraWebcam}>
+                        <Cam
+                            capturing={true}
+                            evaluateCallback={evaluateCallback}
+                            withHint={true}
+                        />
+                    </div>
+
+
+                    <div className={styles.gamesMenuButtonContainer}>
+                        <button className='button' onClick={handleStartGame}>
+                            Start Game
+                        </button>
+                    </div>
 
                 </div>
 
             </div>
 
-            <div className={styles.gamesMenuButtonContainer}>
-                    <button className='button' onClick={handleStartGame}>
-                        temp btn
-                    </button>
-                </div>
+
 
 
         </div >
 
-        
+
     )
 
 
-    
+
 }
 
 GamesInstructions.propTypes = {
