@@ -196,5 +196,6 @@ Cam.propTypes = {
     capturing: PropTypes.bool.isRequired,
     setCapturing: PropTypes.func.isRequired,
     evaluateCallback: PropTypes.func.isRequired,
-    withHint: PropTypes.bool
+    withHint: PropTypes.bool,
+    useML: PropTypes.bool,
 };
