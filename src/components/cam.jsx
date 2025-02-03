@@ -111,16 +111,16 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
                                 console.log("Keypoints:", keypoints);
                                 // array of x,y coordinates
 
-                                // visualise on canvas
-                                if (keypoints) {
-                                    keypoints.forEach((point) => {
-                                        const [x, y] = [point.x * canvas.width, point.y * canvas.height]; // Scale to canvas
-                                        ctx.beginPath();
-                                        ctx.arc(x, y, 5, 0, 2 * Math.PI); // Draw circle at each point
-                                        ctx.fillStyle = "red";
-                                        ctx.fill();
-                                    });
-                                }
+                                // // visualise on canvas
+                                // if (keypoints) {
+                                //     keypoints.forEach((point) => {
+                                //         const [x, y] = [point.x * canvas.width, point.y * canvas.height]; // Scale to canvas
+                                //         ctx.beginPath();
+                                //         ctx.arc(x, y, 5, 0, 2 * Math.PI); // Draw circle at each point
+                                //         ctx.fillStyle = "red";
+                                //         ctx.fill();
+                                //     });
+                                // }
 
                             }
                         }
