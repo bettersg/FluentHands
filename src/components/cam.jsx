@@ -5,7 +5,7 @@ import Webcam from 'react-webcam'
 import { FaLightbulb } from "react-icons/fa"; 
 import axios from 'axios';
 
-export default function Cam({ capturing, setCapturing, evaluateCallback, withHint = true }) {
+export default function Cam({ capturing, setCapturing, evaluateCallback, withHint = true, useML = true }) {
     // every time evaluateCallback is called on a correct sign, increment points
 
     // Feedback states: null, correct, wrong, hint
@@ -83,39 +83,54 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
         handleStartCapture();
     };
 
-    const handleStartCapture = useCallback(() => {
+    const handleStartCapture = useCallback(async () => {
         const video = webcamRef.current.video;
         const stream = webcamRef.current.stream;
-
-        const interval = setInterval(() => {
+    
+        const interval = setInterval(async () => {
             if (stream.active && video.readyState >= 2) {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-
+    
                 const width = video.videoWidth;
                 const height = video.videoHeight;
-
+    
                 if (width > 0 && height > 0) {
                     canvas.width = width;
                     canvas.height = height;
                     ctx.drawImage(video, 0, 0, width, height);
-
-                    canvas.toBlob((blob) => {
+    
+                    if (useML) {
+                        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg"));
                         if (blob) {
                             frameBufferRef.current.push(blob);
-
+    
                             if (frameBufferRef.current.length === 5) {
-                                sendFrames(frameBufferRef.current);
+                                const keypoints = await sendFrames(frameBufferRef.current);
                                 frameBufferRef.current = []; // Reset buffer after sending
+                                console.log("Keypoints:", keypoints);
+                                // array of x,y coordinates
+
+                                // visualise on canvas
+                                if (keypoints) {
+                                    keypoints.forEach((point) => {
+                                        const [x, y] = [point.x * canvas.width, point.y * canvas.height]; // Scale to canvas
+                                        ctx.beginPath();
+                                        ctx.arc(x, y, 5, 0, 2 * Math.PI); // Draw circle at each point
+                                        ctx.fillStyle = "red";
+                                        ctx.fill();
+                                    });
+                                }
+
                             }
                         }
-                    }, "image/jpeg");
+                    }
                 } else {
                     console.warn("Skipping frame: Video dimensions are still 0.");
                 }
             }
-        }, 200); // Capture a frame every 200ms so 5 frames per second will be sent
-
+        }, 200); // Capture a frame every 200ms, so 5 frames per second will be sent
+    
         setIntervalId(interval);
     }, [webcamRef]);
 
@@ -143,10 +158,10 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
             if (majorityLetter === null) {
                 setFeedback(null);
                 setFeedbackMsg('');
-            } else if (majorityLetter === "O") { // TODO: pass the correct letter from parent
-                evaluate(true);
-            } else {
-                evaluate(false);
+                return null;
+            } else { 
+                evaluate(majorityLetter);
+                return modelResponse["normalized_coords"]
             }
 
         } catch (error) {
