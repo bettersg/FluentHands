@@ -142,7 +142,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
         });
 
         try {
-            const response = await axios.post("http://0.0.0.0:8000/predict", formData, {
+            const response = await axios.post("https://tfosr-ml.onrender.com/predict", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -161,7 +161,8 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
                 return null;
             } else { 
                 evaluate(majorityLetter);
-                return modelResponse["normalized_coords"]
+                // return modelResponse["normalized_coords"] // do later
+                return null
             }
 
         } catch (error) {
