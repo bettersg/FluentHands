@@ -1,7 +1,7 @@
 import Cam from '../cam'
 import Interface from './interface'
 import PropTypes from 'prop-types'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './quizPlay.module.css'
 
 export default function QuizPlay({setMode, points, incrementPoints}) {
@@ -61,7 +61,12 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
                 instruction={`Sign '${letter}'`}
                 handleEndQuiz={handleEndQuiz}
             />}
-            <Cam correct={correct} evaluateCallback={setDetectedLetter} capturing={capturing} setCapturing={setCapturing}/>
+            <Cam 
+                correct={correct} 
+                evaluateCallback={setDetectedLetter} 
+                capturing={capturing} 
+                setCapturing={setCapturing}
+            />
             {!capturing && <button className='button' onClick={() => setCapturing(true)}>I&apos;m ready</button>}
             {capturing && showSkip && <button className='button' onClick={handleSkip}>Skip</button>}
         </div>

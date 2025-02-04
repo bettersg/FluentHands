@@ -35,8 +35,7 @@ function GamesInstructions({ setMode }) {
                         Click the start button.
                     </p>
                     <Cam
-                        capturing={capturing}
-                        setCapturing={setCapturing}
+                        capturing={true}
                         withHint={false}
                         useML={false}
                     />                 

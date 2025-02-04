@@ -13,7 +13,7 @@ export default function Lessons() {
       <Header/>
       {lessonMode == 'menu' && <LessonMenu setMode={setLessonMode}/>}
       <Routes>
-        <Route path="lessons/:letter" element={<LessonContent mode={lessonMode} setMode={setLessonMode} />} />
+        <Route path=":letter" element={<LessonContent mode={lessonMode} setMode={setLessonMode} />} />
       </Routes>
       {lessonMode == 'end' && <LessonResult setMode={setLessonMode}/>}
     </>

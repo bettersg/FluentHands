@@ -14,7 +14,9 @@ function GamesStage({ setMode }) {
     const [sessionCount, setSessionCount] = useState(0);
     const [stageState, setStageState] = useState('stage');
     
-    const [capturing, setCapturing] = useState(true) 
+    const [capturing, setCapturing] = useState(true)
+    const [detectedLetter, setDetectedLetter] = useState('')
+    const [correct, setCorrect] = useState(null) 
     const handleEndGame = () => setMode('end')
     
     // select a new word or end game
@@ -36,8 +38,13 @@ function GamesStage({ setMode }) {
                 setUsedWords([...usedWords, newWord]);
                 setCurrentLetterIndex(0);
             }
+            return
         }
-    }, [currentWord, usedWords, wordList, sessionCount]);
+
+        if (capturing) {
+            handleEvalLetter(detectedLetter)
+        }
+    }, [currentWord, usedWords, wordList, sessionCount, detectedLetter, currentLetterIndex]);
 
     // mark letter as correct
     const handleMarkCorrect = () => {
@@ -49,7 +56,8 @@ function GamesStage({ setMode }) {
             setCurrentLetterIndex(currentLetterIndex + 1);
         } else {
             setStageState("results");     // current word is complete, show results page
-
+            setCapturing(false)
+            setDetectedLetter('')
         }
     };
 
@@ -60,11 +68,19 @@ function GamesStage({ setMode }) {
         setInputLetters(newInputLetters);   // stay on the same letter
     };
 
-    const handleEvalLetter = (correct) => {
-        if (correct) {
+    const handleEvalLetter = (detectedLetter) => {
+        console.log('Detected letter:', detectedLetter, 'Required letter:', currentWord[currentLetterIndex])
+        if (detectedLetter == currentWord[currentLetterIndex]) {
+            setCorrect("correct")
+            setTimeout(() => {
+                setCorrect(null)
+            }, 1000)
             handleMarkCorrect()
         } else {
-            handleMarkWrong()
+            if (correct == null) {
+                setCorrect('wrong')
+                handleMarkWrong()
+            }
         }
     }
 
@@ -73,6 +89,7 @@ function GamesStage({ setMode }) {
         setStageState('stage');
         setCurrentWord(''); // reset word
         setSessionCount(sessionCount + 1);
+        setCapturing(true)
     };
 
     return (
@@ -88,8 +105,8 @@ function GamesStage({ setMode }) {
                         <Cam
                             capturing={capturing}
                             setCapturing={setCapturing}
-                            requiredLetter={currentWord[currentLetterIndex]}
-                            evaluateCallback={handleEvalLetter}
+                            correct={correct}
+                            evaluateCallback={setDetectedLetter}
                         />
 
                         <div className={styles.gamesStageLettersOverview}>

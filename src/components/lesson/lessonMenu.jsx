@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import LessonButton from './lessonButton'
 import { useNavigate } from "react-router";
@@ -45,11 +45,6 @@ export default function LessonMenu({ setMode }) {
       setDone(doneObj)
     }
   }, []);
-
-  // useEffect(() => {
-  //   // Write the done state back to localStorage whenever it changes
-  //   window.localStorage.setItem('fluentHands', JSON.stringify(done));
-  // }, [done]);
 
   function toggleNavigate(letter) {
     setMode('lesson');

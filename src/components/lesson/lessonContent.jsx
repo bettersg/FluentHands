@@ -39,6 +39,8 @@ export default function LessonContent({ mode, setMode }) {
     const navigate = useNavigate();
     const { letter } = useParams(); 
     const [capturing, setCapturing] = useState(true);
+    const [detectedLetter, setDetectedLetter] = useState('')
+    const [correct, setCorrect] = useState(null)
 
     const [showNextButton, setShowNextButton] = useState(false);
     const [showTryAgainButton, setShowTryAgainButton] = useState(false);
@@ -63,10 +65,15 @@ export default function LessonContent({ mode, setMode }) {
             console.log("All letters completed! Navigating to result...");
             localStorage.setItem('hasCompletedAllLessons', 'true');
         }
-    }, [done, setMode]);
+        if (correct == null && capturing) {
+            handleSignDetected(detectedLetter)
+        }
+    }, [done, setMode, detectedLetter]);
 
-    const evaluateCallback = (correct) => {
-        if (correct) {
+    const handleSignDetected = (detectedLetter) => {
+        console.log('Detected letter:', detectedLetter, 'Required letter:', letter)
+        if (detectedLetter == letter) {
+            setCorrect('correct')
             setShowNextButton(true); // Show next button when answer is correct
             setShowTryAgainButton(false); // Hide Try Again button
             setShowSkipButton(false); // Hide Skip button
@@ -83,6 +90,7 @@ export default function LessonContent({ mode, setMode }) {
     };
 
     const nextPage = (currentLetter) => {
+        setCorrect(null)
         const nextCharAscii = currentLetter.charCodeAt(0) + 1;
         if (nextCharAscii <= 90) {
             const nextChar = String.fromCharCode(nextCharAscii);
@@ -97,10 +105,10 @@ export default function LessonContent({ mode, setMode }) {
                 <div className={styles.controlContainer}>
                     <h1 className={styles.header}>Sign &apos;{letter}&apos;</h1>
                     <Cam
+                        correct={correct}
+                        evaluateCallback={setDetectedLetter}
                         capturing={capturing}
                         setCapturing={setCapturing}
-                        requiredLetter={letter}
-                        evaluateCallback={evaluateCallback}
                         withHint={false}
                     />
                     <div className={styles.buttonContainer}>

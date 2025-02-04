@@ -12,7 +12,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
     const [hint, setHint] = useState('');
 
     // Timer and interval states
-    const [timeoutId, setTimeoutId] = useState(null);
+    // const [timeoutId, setTimeoutId] = useState(null);
     const [hintTimeoutId, setHintTimeoutId] = useState(null);
     const [intervalId, setIntervalId] = useState(null);
 
@@ -142,7 +142,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
             if (majorityLetter === null) {
                 return null;
             } else { 
-                evaluate(requiredLetter, majorityLetter);
+                evaluate(majorityLetter);
                 // return modelResponse["normalized_coords"] // do later
                 return null
             }
@@ -159,28 +159,22 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
     }, [webcamRef, setCapturing]);
 
     return (
-        <>
             <div className={styles.cam} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'white' }}>
                 {capturing && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} style={{borderRadius: "20px" }}/>}
                 <div className={styles.feedbackContainer}>
-                    {correct && <div className={styles.feedback} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'black' }}>{correct == "correct" ? 'Awesome, hold it there!' : 'Not quite!'}</div>}
+                    {correct && <div className={styles.feedback} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'black' }}>{correct == "correct" ? 'Awesome, you got it!' : 'Not quite!'}</div>}
                     {hint && hint == 'button' && <button className={styles.hintBtn} onClick={handleHintClick}>
                         <FaLightbulb />Hint!</button>
                     }
                 </div>
             </div>
-            {hint && hint == 'picture' && 
-            <div className={styles.hintImg}>
-                {/* <img src={`./letters/${requiredLetter}.png`} alt="letter graphic" /> */}
-            </div>}
-        </>
     );
 }
 
 Cam.propTypes = {
     capturing: PropTypes.bool.isRequired,
-    setCapturing: PropTypes.func.isRequired,
-    evaluateCallback: PropTypes.func.isRequired,
+    setCapturing: PropTypes.func,
+    evaluateCallback: PropTypes.func,
     correct: PropTypes.string,
     withHint: PropTypes.bool,
     useML: PropTypes.bool,
