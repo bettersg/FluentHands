@@ -1,11 +1,11 @@
 import Cam from '../cam'
 import Interface from './interface'
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import styles from './quizPlay.module.css'
 
 export default function QuizPlay({setMode, points, incrementPoints}) {
-    const letters = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y']
+    const letters = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','U','V','W','X','Y']
     const generateLetter = (prevLetter='') => {
         let nextLetter = letters[Math.floor(Math.random()*letters.length)]
         while (nextLetter == prevLetter) {
@@ -18,15 +18,24 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
     const [capturing, setCapturing] = useState(false)
     const [letter, setLetter] = useState(generateLetter())
     const [showSkip, setShowSkip] = useState(false)
-    const handleQuizPoints = (correct) => {
-        if (correct) {
+
+    const checkSign = (requiredSign, detectedSign) => {
+        console.log(requiredSign, detectedSign)
+        if (detectedSign == requiredSign) {
             incrementPoints()
             setShowSkip(false)
             setLetter(prevLetter => generateLetter(prevLetter))
+            return true
         } else {
             setShowSkip(true)
+            return false
         }
     }
+    const handleQuizPoints = useCallback((detectedSign) => {
+        console.log('New letter: ', letter)
+        checkSign(letter, detectedSign)
+    }, [letter])
+    
 
     const handleSkip = () => {
         setLetter(prevLetter => generateLetter(prevLetter))

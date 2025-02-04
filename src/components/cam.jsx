@@ -24,10 +24,10 @@ export default function Cam({capturing, setCapturing, evaluateCallback, withHint
         height: 480
     }
 
-    // placeholder function for CV model API
-    const evaluate = (correct) => {
-        evaluateCallback(correct)
-        sendFeedback(correct)
+    // Placeholder function for CV model API
+    const evaluate = (detectedLetter) => {
+        const correct = evaluateCallback(detectedLetter);
+        sendFeedback(correct);
         if (withHint) {
             if (correct) {
                 clearHintTimer()
