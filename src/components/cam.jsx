@@ -5,7 +5,7 @@ import Webcam from 'react-webcam'
 import { FaLightbulb } from "react-icons/fa"; 
 import axios from 'axios';
 
-export default function Cam({ capturing, setCapturing, requiredLetter, evaluateCallback, withHint = true, useML = true }) {
+export default function Cam({ capturing, setCapturing, evaluateCallback, withHint = true, useML = true }) {
     // every time evaluateCallback is called on a correct sign, increment points
 
     // Feedback states: null, correct, wrong, hint
@@ -30,12 +30,10 @@ export default function Cam({ capturing, setCapturing, requiredLetter, evaluateC
 
     // Placeholder function for CV model API
     const evaluate = (detectedLetter) => {
-        const correct = requiredLetter == detectedLetter
-        console.log(requiredLetter, ' vs detected ', detectedLetter, correct)
-        evaluateCallback(correct);
-        sendFeedback(correct);
+        evaluateCallback(detectedLetter);
+        sendFeedback(detectedLetter);
         if (withHint) {
-            if (correct) {
+            if (detectedLetter) {
                 clearHintTimer();
                 setHint('');
             } else {
@@ -191,7 +189,7 @@ export default function Cam({ capturing, setCapturing, requiredLetter, evaluateC
             </div>
             {hint && hint == 'picture' && 
             <div className={styles.hintImg}>
-                <img src={`./letters/${requiredLetter}.png`} alt="letter graphic" />
+                {/* <img src={`./letters/${requiredLetter}.png`} alt="letter graphic" /> */}
             </div>}
         </>
     );
@@ -200,7 +198,6 @@ export default function Cam({ capturing, setCapturing, requiredLetter, evaluateC
 Cam.propTypes = {
     capturing: PropTypes.bool.isRequired,
     setCapturing: PropTypes.func.isRequired,
-    requiredLetter: PropTypes.string.isRequired,
     evaluateCallback: PropTypes.func.isRequired,
     withHint: PropTypes.bool,
     useML: PropTypes.bool,
