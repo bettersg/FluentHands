@@ -15,7 +15,8 @@ video {
     gap: 1rem;
     justify-content: center;
     align-items: center;
-    border: 3px solid black;
+    border: 4px solid #FFFFFF;
+    border-radius: 20px; /* Rounded corners */
     box-sizing: content-box;
 }
 
@@ -49,6 +50,9 @@ video {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    top: 2%; /* Adjust this value for relative vertical positioning */
+    left: 2%; /* Adjust this value for relative horizontal positioning */
 }
 
 .btnContainer {
