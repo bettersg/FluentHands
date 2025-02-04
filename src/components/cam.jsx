@@ -31,7 +31,6 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
     // Placeholder function for CV model API
     const evaluate = (detectedLetter) => {
         evaluateCallback(detectedLetter);
-        sendFeedback(correct);
         if (withHint) {
             if (detectedLetter) {
                 clearHintTimer();
@@ -42,14 +41,14 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
         }
     };
 
-    // useCallback(() => {
-    //     console.log('Correct:', correct);
-    //     if (correct) {
-    //         sendFeedback(true);
-    //     } else {
-    //         sendFeedback(false);
-    //     }
-    // }, [correct]);
+    useCallback(() => {
+        console.log('Correct:', correct);
+        if (correct) {
+            sendFeedback(true);
+        } else {
+            sendFeedback(false);
+        }
+    }, [correct]);
 
     const sendFeedback = (correct) => {
         setFeedback(correct ? 'correct' : 'wrong');
@@ -187,10 +186,10 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
 
     return (
         <>
-            <div className={styles.cam} style={{ borderColor: feedback ? `var(--color-${feedback})` : 'white' }}>
+            <div className={styles.cam} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'white' }}>
                 {capturing && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} style={{borderRadius: "20px" }}/>}
                 <div className={styles.feedbackContainer}>
-                    {feedbackMsg && <div className={styles.feedback} style={{ borderColor: feedback ? `var(--color-${feedback})` : 'black' }}>{feedbackMsg}</div>}
+                    {correct && <div className={styles.feedback} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'black' }}>{correct == "correct" ? 'Awesome, hold it there!' : 'Not quite!'}</div>}
                     {hint && hint == 'button' && <button className={styles.hintBtn} onClick={handleHintClick}>
                         <FaLightbulb />Hint!</button>
                     }
@@ -208,7 +207,7 @@ Cam.propTypes = {
     capturing: PropTypes.bool.isRequired,
     setCapturing: PropTypes.func.isRequired,
     evaluateCallback: PropTypes.func.isRequired,
-    correct: PropTypes.bool.isRequired,
+    correct: PropTypes.string,
     withHint: PropTypes.bool,
     useML: PropTypes.bool,
 };

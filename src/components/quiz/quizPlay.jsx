@@ -11,7 +11,7 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
         while (nextLetter == prevLetter) {
             nextLetter = letters[Math.floor(Math.random()*letters.length)]
         }
-        console.log('Generated letter:', nextLetter, 'Previous letter:', prevLetter)
+        // console.log('Generated letter:', nextLetter, 'Previous letter:', prevLetter)
         return nextLetter
     }
 
@@ -20,17 +20,26 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
     const [letter, setLetter] = useState(generateLetter())
     const [showSkip, setShowSkip] = useState(false)
     const [detectedLetter, setDetectedLetter] = useState('')
-    const [correct, setCorrect] = useState(false)
+    const [correct, setCorrect] = useState(null)
 
     const handleQuizPoints = (detectedLetter) => {
         console.log('Detected letter:', detectedLetter, 'Required letter:', letter)
         if (detectedLetter == letter) {
             incrementPoints()
             setShowSkip(false)
-            setLetter(generateLetter(letter))
-            setCorrect(true)
+            // wait before changing letter
+            setCorrect("correct")
+            setTimeout(() => {
+                setLetter(generateLetter(letter))
+                setCorrect(null)
+            }, 1000)
+
         } else {
             setShowSkip(true)
+            setCorrect("wrong")
+            setTimeout(() => {
+                setCorrect(null)
+            }, 1000)
         }
     }
 
