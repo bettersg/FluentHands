@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router'
 function GamesEnd({ setMode }) {
     const navigate = useNavigate()
     const handleEndGame = () => navigate('/')
-    const handleNextLevel = () => setMode('stage')
 
 
     return (
@@ -19,12 +18,9 @@ function GamesEnd({ setMode }) {
 
             <div className={styles.gamesEndButtonsContainer}>
                 <button className='button' onClick={handleEndGame}>
-                    <RxCross2 />Quit Game
+                    <RxCross2 /> Back to homepage
                 </button>
 
-                <button className='button' onClick={handleNextLevel}>
-                    <MdOutlineKeyboardArrowRight />Next Level
-                </button>
             </div>
 
         </div>
