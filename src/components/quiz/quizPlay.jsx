@@ -20,6 +20,7 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
     const [letter, setLetter] = useState(generateLetter())
     const [showSkip, setShowSkip] = useState(false)
     const [detectedLetter, setDetectedLetter] = useState('')
+    const [correct, setCorrect] = useState(false)
 
     const handleQuizPoints = (detectedLetter) => {
         console.log('Detected letter:', detectedLetter, 'Required letter:', letter)
@@ -27,6 +28,7 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
             incrementPoints()
             setShowSkip(false)
             setLetter(generateLetter(letter))
+            setCorrect(true)
         } else {
             setShowSkip(true)
         }
@@ -50,7 +52,7 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
                 instruction={`Sign '${letter}'`}
                 handleEndQuiz={handleEndQuiz}
             />}
-            <Cam evaluateCallback={setDetectedLetter} capturing={capturing} setCapturing={setCapturing}/>
+            <Cam correct={correct} evaluateCallback={setDetectedLetter} capturing={capturing} setCapturing={setCapturing}/>
             {!capturing && <button className='button' onClick={() => setCapturing(true)}>I&apos;m ready</button>}
             {capturing && showSkip && <button className='button' onClick={handleSkip}>Skip</button>}
         </div>

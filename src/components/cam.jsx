@@ -5,7 +5,7 @@ import Webcam from 'react-webcam'
 import { FaLightbulb } from "react-icons/fa"; 
 import axios from 'axios';
 
-export default function Cam({ capturing, setCapturing, evaluateCallback, withHint = true, useML = true }) {
+export default function Cam({ capturing, setCapturing, evaluateCallback, correct, withHint = true, useML = true }) {
     // every time evaluateCallback is called on a correct sign, increment points
 
     // Feedback states: null, correct, wrong, hint
@@ -31,7 +31,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
     // Placeholder function for CV model API
     const evaluate = (detectedLetter) => {
         evaluateCallback(detectedLetter);
-        sendFeedback(detectedLetter);
+        sendFeedback(correct);
         if (withHint) {
             if (detectedLetter) {
                 clearHintTimer();
@@ -41,6 +41,15 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, withHin
             }
         }
     };
+
+    // useCallback(() => {
+    //     console.log('Correct:', correct);
+    //     if (correct) {
+    //         sendFeedback(true);
+    //     } else {
+    //         sendFeedback(false);
+    //     }
+    // }, [correct]);
 
     const sendFeedback = (correct) => {
         setFeedback(correct ? 'correct' : 'wrong');
@@ -199,6 +208,7 @@ Cam.propTypes = {
     capturing: PropTypes.bool.isRequired,
     setCapturing: PropTypes.func.isRequired,
     evaluateCallback: PropTypes.func.isRequired,
+    correct: PropTypes.bool.isRequired,
     withHint: PropTypes.bool,
     useML: PropTypes.bool,
 };
