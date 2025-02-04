@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react'
+import styles from './interface.module.css'
 
-export default function Timer({points, handleEndQuiz}) {
+export default function Interface({points, instruction, handleEndQuiz}) {
     const timeLimitSeconds = 30
     const [seconds, setSeconds] = useState(timeLimitSeconds);
 
@@ -24,14 +25,16 @@ export default function Timer({points, handleEndQuiz}) {
     },[])
 
     return (
-        <>
-            <div>0:{seconds}</div>
-            <div>Score: {points}</div>
-        </>
+        <div className={styles.interface}>
+            <div className={styles.info}>Score: {points}</div>
+            <div className={styles.instruction}>{instruction}</div>
+            <div className={styles.info}>0:{seconds}</div>
+        </div>
     )
 }
 
-Timer.propTypes = {
+Interface.propTypes = {
     points: PropTypes.number.isRequired,
+    instruction: PropTypes.string.isRequired,
     handleEndQuiz: PropTypes.func.isRequired
 }
