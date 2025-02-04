@@ -8,9 +8,7 @@ import axios from 'axios';
 export default function Cam({ capturing, setCapturing, evaluateCallback, correct, withHint = true, useML = true }) {
     // every time evaluateCallback is called on a correct sign, increment points
 
-    // Feedback states: null, correct, wrong, hint
-    const [feedback, setFeedback] = useState(null);
-    const [feedbackMsg, setFeedbackMsg] = useState('');
+    // Correct states: null, correct, wrong, hint
     const [hint, setHint] = useState('');
 
     // Timer and interval states
@@ -41,27 +39,6 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
         }
     };
 
-    useCallback(() => {
-        console.log('Correct:', correct);
-        if (correct) {
-            sendFeedback(true);
-        } else {
-            sendFeedback(false);
-        }
-    }, [correct]);
-
-    const sendFeedback = (correct) => {
-        setFeedback(correct ? 'correct' : 'wrong');
-        setFeedbackMsg(correct ? 'Awesome, hold it there!' : 'Not quite!');
-        clearTimeout(timeoutId);
-
-        let timeout = setTimeout(() => {
-            setFeedback(null);
-            setFeedbackMsg('');
-        }, 5000);
-        setTimeoutId(timeout);
-    };
-
     const startHintTimer = () => {
         if (!hintTimeoutId) {
             let timeout = setTimeout(() => {
@@ -80,7 +57,6 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
 
     const handleHintClick = () => {
         setHint('picture');
-        setFeedback(null);
         
     };
 
@@ -164,8 +140,6 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
 
             // if letter is O then correct else wrong
             if (majorityLetter === null) {
-                setFeedback(null);
-                setFeedbackMsg('');
                 return null;
             } else { 
                 evaluate(majorityLetter);
