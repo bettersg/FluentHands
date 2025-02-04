@@ -17,7 +17,7 @@ export default function QuizResults({setMode, points, setPoints}) {
   return (
     <div className={styles.resultsContainer}>
         <div className={styles.results}>
-          <img src="./quizComplete.svg" alt="girl standing proudly and pointing to herself" />
+          <img src="./complete.svg" alt="girl standing proudly and pointing to herself" />
           <PointsDisplay points={points} maxPoints={30}/>
           <h3 className={styles.resultsPara}>Bravo! You’ve completed the quiz — what’s your next challenge?</h3>
         </div>

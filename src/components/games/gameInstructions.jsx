@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
 import styles from './gameInstructions.module.css'
-import Camera from './camera'
-import { useEffect } from 'react';
+import { useState } from 'react';
+import Cam from '../cam';
 
 
 
 function GamesInstructions({ setMode }) {
+    const [capturing, setCapturing] = useState(true)
     const handleStartGame = () => setMode('stage')
 
     return (
@@ -30,21 +31,25 @@ function GamesInstructions({ setMode }) {
 
                 <div className={styles.gamesInstructionsWebcamOverview}>
                     <p>
-                        Place your hand in the orange box (your webcam), so it is visible on screen.
-                        Click anywhere to start.
+                        Place your hand in the orange box (your webcam), so it is visible on screen. <br/>
+                        Click the start button.
                     </p>
-
-                    <Camera></Camera>                    
+                    <Cam
+                        capturing={capturing}
+                        setCapturing={setCapturing}
+                        withHint={false}
+                        useML={false}
+                    />                 
 
                 </div>
 
             </div>
 
             <div className={styles.gamesMenuButtonContainer}>
-                    <button className='button' onClick={handleStartGame}>
-                        temp btn
-                    </button>
-                </div>
+                <button className='button' onClick={handleStartGame}>
+                    Start Game
+                </button>
+            </div>
 
 
         </div >

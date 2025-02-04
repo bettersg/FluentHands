@@ -1,12 +1,42 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import Cam from '../cam';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import styles from './lessonContent.module.css';
-import { useNavigate } from "react-router";
 import Header from "../header"
 
-export default function LessonContent({ setMode }) {
+const defaultDone = {
+    'A': false,
+    'B': false,
+    'C': false,
+    'D': false,
+    'E': false,
+    'F': false,
+    'G': false,
+    'H': false,
+    'I': false,
+    'J': false,
+    'K': false,
+    'L': false,
+    'M': false,
+    'N': false,
+    'O': false,
+    'P': false,
+    'Q': false,
+    'R': false,
+    'S': false,
+    'T': false,
+    'U': false,
+    'V': false,
+    'W': false,
+    'X': false,
+    'Y': false,
+    'Z': false,
+}
+
+export default function LessonContent({ mode, setMode }) {
+    
+    const navigate = useNavigate();
     const { letter } = useParams(); 
     const [capturing, setCapturing] = useState(true);
 
@@ -14,11 +44,10 @@ export default function LessonContent({ setMode }) {
     const [showTryAgainButton, setShowTryAgainButton] = useState(false);
     const [showSkipButton, setShowSkipButton] = useState(false);
 
-    const navigate = useNavigate();
 
     const [done, setDone] = useState(() => {
         const storedDone = localStorage.getItem('fluentHands');
-        return storedDone ? JSON.parse(storedDone) : {};
+        return storedDone ? JSON.parse(storedDone) : defaultDone;
       });
 
     // Check if all letter is true
@@ -27,6 +56,9 @@ export default function LessonContent({ setMode }) {
     };
 
     useEffect(() => {
+        if (mode != 'lesson') {
+            navigate('/lessons')
+        }
         if (checkAllDone()) {
             console.log("All letters completed! Navigating to result...");
             localStorage.setItem('hasCompletedAllLessons', 'true');
@@ -62,23 +94,30 @@ export default function LessonContent({ setMode }) {
         <>
             <Header/>
             <div className={styles.container}>
-                <h1 className={styles.header}>Sign &apos;{letter}&apos;</h1>
-                <Cam 
-                    capturing={capturing} 
-                    setCapturing={setCapturing} 
-                    evaluateCallback={evaluateCallback} 
-                    withHint={false}
-                />
-                <div className={styles.buttonContainer}>
-                    {showNextButton && (
-                        <button className={styles.nextBtn} onClick={() => nextPage(letter)}>Next</button>
-                    )}
-                    {showTryAgainButton && (
-                        <button className={styles.tryAgainBtn} onClick={() => alert("Try Again!")}>Try Again</button>
-                    )}
-                    {showSkipButton && (
-                        <button className={styles.skipBtn} onClick={() => nextPage(letter)}>Skip</button>
-                    )}
+                <div className={styles.controlContainer}>
+                    <h1 className={styles.header}>Sign &apos;{letter}&apos;</h1>
+                    <Cam
+                        capturing={capturing}
+                        setCapturing={setCapturing}
+                        requiredLetter={letter}
+                        evaluateCallback={evaluateCallback}
+                        withHint={false}
+                    />
+                    <div className={styles.buttonContainer}>
+                        {showNextButton && (
+                            <button className={styles.nextBtn} onClick={() => nextPage(letter)}>Next</button>
+                        )}
+                        {showTryAgainButton && (
+                            <button className={styles.tryAgainBtn} onClick={() => alert("Try Again!")}>Try Again</button>
+                        )}
+                        {showSkipButton && (
+                            <button className={styles.skipBtn} onClick={() => nextPage(letter)}>Skip</button>
+                        )}
+                    </div>
+                </div>
+                <div className={styles.imgContainer}>
+                    <img src={`/letters/${letter}.png`} alt={`letter ${letter} sign`} />
+
                 </div>
             </div>
         </>
@@ -86,5 +125,6 @@ export default function LessonContent({ setMode }) {
 }
 
 LessonContent.propTypes = {
+    mode: PropTypes.string.isRequired,
     setMode: PropTypes.func.isRequired
 };

@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from './gameStage.module.css';
-import Camera from './camera';
+import Cam from '../cam';
 
 function GamesStage({ setMode }) {
 
-    const handleEndGame = () => setMode('end')
-
     const wordList = ['hello', 'love', 'name', 'thanks', 'friend', 'dear', 'happy', 'sorry', 'help', 'think', 'say', 'good', 'bye', 'safe', 'smile', 'cheers', 'hope', 'joy', 'sad', 'find'];
-
+    
     const [usedWords, setUsedWords] = useState([]);
     const [currentWord, setCurrentWord] = useState('');
     const [inputLetters, setInputLetters] = useState([]);
     const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
     const [sessionCount, setSessionCount] = useState(0);
     const [stageState, setStageState] = useState('stage');
-
+    
+    const [capturing, setCapturing] = useState(true) 
+    const handleEndGame = () => setMode('end')
+    
     // select a new word or end game
     useEffect(() => {
         if (sessionCount > 5) {
             handleEndGame();
             return;
         }
-
         if (currentWord == '') {
             const remainingWords = wordList.filter(word => !usedWords.includes(word));
 
@@ -38,9 +38,6 @@ function GamesStage({ setMode }) {
             }
         }
     }, [currentWord, usedWords, wordList, sessionCount]);
-
-
-
 
     // mark letter as correct
     const handleMarkCorrect = () => {
@@ -63,6 +60,13 @@ function GamesStage({ setMode }) {
         setInputLetters(newInputLetters);   // stay on the same letter
     };
 
+    const handleEvalLetter = (correct) => {
+        if (correct) {
+            handleMarkCorrect()
+        } else {
+            handleMarkWrong()
+        }
+    }
 
     // set the next word and go back to the page where the user signs
     const handleNextWord = () => {
@@ -70,8 +74,6 @@ function GamesStage({ setMode }) {
         setCurrentWord(''); // reset word
         setSessionCount(sessionCount + 1);
     };
-
-
 
     return (
         <div className={styles.gamesStageWithButton}>
@@ -83,7 +85,12 @@ function GamesStage({ setMode }) {
                             Spell {currentWord}
                         </h1>
 
-                        <Camera />
+                        <Cam
+                            capturing={capturing}
+                            setCapturing={setCapturing}
+                            requiredLetter={currentWord[currentLetterIndex]}
+                            evaluateCallback={handleEvalLetter}
+                        />
 
                         <div className={styles.gamesStageLettersOverview}>
                             {currentWord.split('').map((letter, index) => (
@@ -103,12 +110,12 @@ function GamesStage({ setMode }) {
                     </div>
 
                     <div className={styles.gamesStageButtonContainer}>
-                        <button className='button' onClick={handleMarkCorrect}>
+                        {/* <button className='button' onClick={handleMarkCorrect}>
                             Correct
                         </button>
                         <button className='button' onClick={handleMarkWrong}>
                             Wrong
-                        </button>
+                        </button> */}
                         <button className="button" onClick={() => setStageState("results")}>
                             Skip
                         </button>
@@ -126,7 +133,7 @@ function GamesStage({ setMode }) {
                         <div className={styles.gamesResultsLettersOverview}>
                             {currentWord.split('').map((letter, index) => (
                                 <div key={index} className={styles.gamesResultsLetterContainer}>
-                                    <img src="./WebcamPlaceholder.png" alt="webcam placeholder" />
+                                    <img src={`./letters/${letter}.png`} alt="webcam placeholder" />
                                     <div
                                         className={styles.gamesStageLetterCorrect}>
                                         {letter}

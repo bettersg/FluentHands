@@ -6,7 +6,7 @@ import { FaLightbulb } from "react-icons/fa";
 import axios from 'axios';
 
 export default function Cam({ capturing, setCapturing, requiredLetter, evaluateCallback, withHint = true, useML = true }) {
-    // every time evaluateCallback is called on a correct sign, increment points
+    console.log(requiredLetter)
 
     // Feedback states: null, correct, wrong, hint
     const [feedback, setFeedback] = useState(null);
@@ -162,7 +162,7 @@ export default function Cam({ capturing, setCapturing, requiredLetter, evaluateC
                 setFeedbackMsg('');
                 return null;
             } else { 
-                evaluate(majorityLetter);
+                evaluate(requiredLetter, majorityLetter);
                 // return modelResponse["normalized_coords"] // do later
                 return null
             }
@@ -200,7 +200,7 @@ export default function Cam({ capturing, setCapturing, requiredLetter, evaluateC
 Cam.propTypes = {
     capturing: PropTypes.bool.isRequired,
     setCapturing: PropTypes.func.isRequired,
-    requiredLetter: PropTypes.string.isRequired,
+    requiredLetter: PropTypes.string,
     evaluateCallback: PropTypes.func.isRequired,
     withHint: PropTypes.bool,
     useML: PropTypes.bool,

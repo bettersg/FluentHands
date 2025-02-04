@@ -7,8 +7,7 @@ video {
 .cam {
     width: 640px;
     height: 480px;
-    min-width: 100%;
-    min-height: 100%;
+    padding: 1rem;
     background-color: #FFEBCC;
     display: flex;
     flex-direction: column;
@@ -81,6 +80,7 @@ video {
     width: 300px;
     height: 300px;
     position: absolute;
-    right: 0px;
+    top: 300px;
+    right: 300px;
 
 }

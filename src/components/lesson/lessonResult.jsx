@@ -12,7 +12,7 @@ export default function LessonResult({setMode}) {
   return (
     <div className={styles.resultsContainer}>
         <div className={styles.results}>
-          <img src="./quizComplete.svg" alt="girl standing proudly and pointing to herself" />
+          <img src="./complete.svg" alt="girl standing proudly and pointing to herself" />
           <h3 className={styles.resultsPara}>Congratulations! You’re proving that practice makes perfect!</h3>
         </div>
         <div className={styles.btnContainer}>
