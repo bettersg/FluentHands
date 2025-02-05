@@ -52,17 +52,13 @@ export default function LessonMenu({ setMode }) {
   }
 
   return (
-    <div className={styles.firstLayer}>
-      <div className={styles.secLayer}>
+    <div className={styles.lessonMenu}>
         <span className={styles.heading}>Learn the Alphabets</span>
-      </div>
-      <div className={styles.secLayer}>
-        <div className={styles.thirdLayer}>
+        <div className={styles.lessonButtons}>
           {Object.keys(done).map((letter) => {
             return <LessonButton key={letter} letter={letter} done={done[letter]} onClick={() => toggleNavigate(letter)}/>
           })}
         </div>
-      </div>
     </div>
   );
 }

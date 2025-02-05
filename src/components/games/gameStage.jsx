@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styles from './gameStage.module.css';
 import Cam from '../cam';
 
-function GamesStage({ setMode }) {
+export default function GamesStage({ setMode }) {
 
     const wordList = ['hello', 'love', 'name', 'thanks', 'friend', 'dear', 'happy', 'sorry', 'help', 'think', 'say', 'good', 'bye', 'safe', 'smile', 'cheers', 'hope', 'joy', 'sad', 'find'];
     
@@ -127,12 +127,6 @@ function GamesStage({ setMode }) {
                     </div>
 
                     <div className={styles.gamesStageButtonContainer}>
-                        {/* <button className='button' onClick={handleMarkCorrect}>
-                            Correct
-                        </button>
-                        <button className='button' onClick={handleMarkWrong}>
-                            Wrong
-                        </button> */}
                         <button className="button" onClick={() => setStageState("results")}>
                             Skip
                         </button>
@@ -142,11 +136,9 @@ function GamesStage({ setMode }) {
                 // results page for one word
                 <div className={styles.gamesResultsWithButton}>
                     <div className={styles.gamesResultsOverview}>
-
                         <h1 className={styles.gamesStageHeader}>
                             Spell {currentWord}
                         </h1>
-
                         <div className={styles.gamesResultsLettersOverview}>
                             {currentWord.split('').map((letter, index) => (
                                 <div key={index} className={styles.gamesResultsLetterContainer}>
@@ -175,5 +167,3 @@ function GamesStage({ setMode }) {
 GamesStage.propTypes = {
     setMode: PropTypes.func.isRequired
 }
-
-export default GamesStage

@@ -6,28 +6,22 @@ function GamesMenu({ setMode }) {
     const handleStartGame = () => setMode('instructions')
 
     return (
-        <div>
-            <div className={styles.gamesMenuWithButton}>
-                <div className={styles.gamesMenu}>
-                    <img src='./gamesMenu.png' alt="image showing a burger reading Hamburger Spells"></img>
-                    <h1 className={styles.gamesMenuHeader}>Hamburger Spells</h1>
-                    <h2 className={styles.gamesMenuSubheader}>Mini-game</h2>
-                    <p className={styles.gamesMenuText}>In this game, you will be finger spelling the ingredients
-                        needed to create a burger! Have fun!
-                    </p>
-                </div>
+        <div className={styles.gamesMenuWithButton}>
+            <div className={styles.gamesMenu}>
+                <img className={styles.gamesMenuImg} src='./gamesMenu.jpg' alt="image showing a burger reading Hamburger Spells"></img>
+                <h1 className={styles.gamesMenuHeader}>Word Spells</h1>
+                <h2 className={styles.gamesMenuSubheader}>Mini-game</h2>
+                <p className={styles.gamesMenuText}>In this game, you will be finger spelling letters to form a word! Have fun!
+                </p>
+            </div>
 
-                <div className={styles.gamesMenuButtonContainer}>
-                    <button className='button' onClick={handleStartGame}>
-                        <VscTriangleRight />Play
-                    </button>
-                </div>
-
+            <div className={styles.gamesMenuButtonContainer}>
+                <button className='button' onClick={handleStartGame}>
+                    <VscTriangleRight />Play
+                </button>
             </div>
         </div>
     )
-
-
 }
 
 GamesMenu.propTypes = {

@@ -4,7 +4,7 @@ import { RxCross2 } from "react-icons/rx";
 import { IoMdRefresh } from "react-icons/io";
 import { useNavigate } from 'react-router'
 
-function GamesEnd({ setMode }) {
+export default function GamesEnd({ setMode }) {
     const navigate = useNavigate()
     const handleRestartGame = () => setMode('stage')
     const handleEndGame = () => navigate('/')
@@ -24,17 +24,11 @@ function GamesEnd({ setMode }) {
                 <button className='button' onClick={handleEndGame}>
                     <RxCross2 /> Back to homepage
                 </button>
-
             </div>
-
         </div>
     )
-
-
 }
 
 GamesEnd.propTypes = {
     setMode: PropTypes.func.isRequired
 }
-
-export default GamesEnd
