@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import styles from './interface.module.css'
 
 export default function Interface({points, instruction, handleEndQuiz}) {
-    const timeLimitSeconds = 300
+    const timeLimitSeconds = 60
     const [minutes, setMinutes] = useState(parseInt(timeLimitSeconds / 60))
     const [seconds, setSeconds] = useState(timeLimitSeconds);
 

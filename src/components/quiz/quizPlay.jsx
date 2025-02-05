@@ -11,7 +11,6 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
         while (nextLetter == prevLetter) {
             nextLetter = letters[Math.floor(Math.random()*letters.length)]
         }
-        // console.log('Generated letter:', nextLetter, 'Previous letter:', prevLetter)
         return nextLetter
     }
 

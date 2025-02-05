@@ -6,7 +6,6 @@ import { FaLightbulb } from "react-icons/fa";
 import axios from 'axios';
 
 export default function Cam({ capturing, setCapturing, evaluateCallback, correct, withHint = true, useML = true }) {
-    // every time evaluateCallback is called on a correct sign, increment points
 
     // Correct states: null, correct, wrong, hint
     const [hint, setHint] = useState('');

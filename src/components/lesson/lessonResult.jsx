@@ -1,11 +1,10 @@
 import { MdArrowForwardIos } from "react-icons/md";
-import { IoMdRefresh } from "react-icons/io";
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router'
 import styles from './lessonResults.module.css'
 
 
-export default function LessonResult({setMode}) {
+export default function LessonResult() {
   const navigate = useNavigate()
   const handleBack = () => navigate('/')
 

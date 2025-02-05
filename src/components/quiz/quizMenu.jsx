@@ -13,7 +13,7 @@ function QuizMenu({setMode}) {
                 <ol className={styles.quizMenuSteps} type='1'>
                     <li>A letter will appear on the screen.</li>
                     <br />
-                    <li>Sign the letter using your hands within 30 seconds.</li>
+                    <li>Sign the letter using your hands within 1 min.</li>
                     <br />
                     <li>Your webcam will track your sign and provide instant feedback.</li>
                 </ol>
