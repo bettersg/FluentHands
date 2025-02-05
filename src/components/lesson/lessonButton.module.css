@@ -1,0 +1,39 @@
+.buttonNotDone, .buttonDone {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 25px;
+    font-size: 33px;
+    font-weight: bold;
+    box-shadow: inset 0px -1px 10px rgba(56, 73, 90, 0.4);
+}
+
+.buttonNotDone {
+    border: 3px solid rgba(0, 157, 214, 1);
+    color: #00729C;
+    background-color: #ffffff;
+}
+
+.buttonDone {
+    border: 3px solid rgba(0, 114, 156, 1);
+    color: #FFEBCC;
+    background-color: #009DD6;
+}
+
+.button .letter {
+    position: relative;
+    z-index: 1;
+}
+
+.checkmarkIcon {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    font-size: 25px;
+    color: #F5A433;
+    z-index: 10;
+}

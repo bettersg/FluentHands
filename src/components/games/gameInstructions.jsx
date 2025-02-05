@@ -1,22 +1,19 @@
 import PropTypes from 'prop-types'
 import styles from './gameInstructions.module.css'
-import Camera from './camera'
-import { useEffect } from 'react';
+import Cam from '../cam';
 
 
 
-function GamesInstructions({ setMode }) {
+export default function GamesInstructions({ setMode }) {
     const handleStartGame = () => setMode('stage')
 
     return (
         <div>
             <div className={styles.gamesInstructionsOverview}>
-
                 <div className={styles.gamesInstructionsMenu}>
                     <h1 className={styles.gamesInstructionsHeader}>
                         How to play
                     </h1>
-
                     <ol className={styles.gamesInstructionsText}>
                         <li>Form words by fingerspelling the alphabets</li>
                         <br />
@@ -24,42 +21,29 @@ function GamesInstructions({ setMode }) {
                         <br />
                         <li>Your webcam will track your signs and give instant feedback.</li>
                     </ol>
-
-
                 </div>
-
                 <div className={styles.gamesInstructionsWebcamOverview}>
                     <p>
-                        Place your hand in the orange box (your webcam), so it is visible on screen.
-                        Click anywhere to start.
+                        Place your hand in the orange box (your webcam), so it is visible on screen. <br/>
+                        Click the start button.
                     </p>
-
-                    <Camera></Camera>                    
-
+                    <Cam
+                        capturing={true}
+                        withHint={false}
+                        useML={false}
+                    />                 
                 </div>
-
             </div>
 
             <div className={styles.gamesMenuButtonContainer}>
-                    <button className='button' onClick={handleStartGame}>
-                        temp btn
-                    </button>
-                </div>
-
-
+                <button className='button' onClick={handleStartGame}>
+                    Start Game
+                </button>
+            </div>
         </div >
-
-        
     )
-
-
-    
 }
 
 GamesInstructions.propTypes = {
     setMode: PropTypes.func.isRequired
 }
-
-
-
-export default GamesInstructions

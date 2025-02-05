@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react'
+import styles from './interface.module.css'
 
-export default function Timer({points, handleEndQuiz}) {
-    const timeLimitSeconds = 30
+export default function Interface({points, instruction, handleEndQuiz}) {
+    const timeLimitSeconds = 300
+    const [minutes, setMinutes] = useState(parseInt(timeLimitSeconds / 60))
     const [seconds, setSeconds] = useState(timeLimitSeconds);
 
     const deadline = Date.now() + timeLimitSeconds * 1000;
@@ -10,6 +12,8 @@ export default function Timer({points, handleEndQuiz}) {
     const updateTimer = () => {
         const time = deadline - Date.now();
         if (time >= 0) {
+            let mins = parseInt(time / 60000)
+            setMinutes(mins)
             let secs = parseInt(time / 1000) % 60
             if (secs < 10) secs = String(secs).padStart(2, '0')
             setSeconds(secs);
@@ -24,14 +28,16 @@ export default function Timer({points, handleEndQuiz}) {
     },[])
 
     return (
-        <>
-            <div>0:{seconds}</div>
-            <div>Score: {points}</div>
-        </>
+        <div className={styles.interface}>
+            <div className={styles.info}>Score: {points}</div>
+            <div className={styles.instruction}>{instruction}</div>
+            <div className={styles.info}>{minutes}:{seconds}</div>
+        </div>
     )
 }
 
-Timer.propTypes = {
+Interface.propTypes = {
     points: PropTypes.number.isRequired,
+    instruction: PropTypes.string.isRequired,
     handleEndQuiz: PropTypes.func.isRequired
 }
