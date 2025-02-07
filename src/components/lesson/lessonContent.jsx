@@ -61,10 +61,6 @@ export default function LessonContent({ mode, setMode }) {
         if (mode != 'lesson') {
             navigate('/lessons')
         }
-        if (checkAllDone()) {
-            console.log("All letters completed! Navigating to result...");
-            localStorage.setItem('hasCompletedAllLessons', 'true');
-        }
         if (correct == null && capturing) {
             handleSignDetected(detectedLetter)
         }
@@ -103,7 +99,6 @@ export default function LessonContent({ mode, setMode }) {
             const nextChar = String.fromCharCode(nextCharAscii);
             navigate(`/lessons/${nextChar}`)
         } else {
-            console.log(checkAllDone())
             if (checkAllDone()) {
                 setMode('end')
                 navigate(`/lessons`)
@@ -117,25 +112,23 @@ export default function LessonContent({ mode, setMode }) {
     return (
         <>
             <Header/>
-            <div className={styles.container}>
+            <div className={styles.lessonContainer}>
                 {lettersWithoutCam.includes(letter) ? 
-                <div>
-                    <div className={styles.controlContainer}>
-                        <h1 className={styles.header}>Sign &apos;{letter}&apos;</h1>
-                        <div className={styles.imgContainer}>
-                            <img src={`/letters/${letter}.png`} alt={`letter ${letter} sign`} />
-                        </div>
-                        <div className={styles.buttonContainer}>
-                            <button className={styles.nextBtn} onClick={() => markDoneAndNextPage(letter)}>Next</button>
-                        </div>
+                <div className={styles.controlContainer}>
+                    <h1 className={styles.header}>Sign &apos;{letter}&apos;</h1>
+                    <div className={styles.imgContainer}>
+                        <img src={`/letters/${letter}.png`} alt={`letter ${letter} sign`} />
+                    </div>
+                    <div className={styles.buttonContainer}>
+                        <button className={styles.nextBtn} onClick={() => markDoneAndNextPage(letter)}>Next</button>
                     </div>
                 </div> :
-                <div>
+                <>
                     <div className={styles.controlContainer}>
                         <h1 className={styles.header}>Sign &apos;{letter}&apos;</h1>
                         <Cam
                             correct={correct}
-                            evaluateCallback={setDetectedLetter}
+                            setDetectedLetter={setDetectedLetter}
                             capturing={capturing}
                             setCapturing={setCapturing}
                             withHint={false}
@@ -152,10 +145,8 @@ export default function LessonContent({ mode, setMode }) {
                             )}
                         </div>
                     </div>
-                    <div className={styles.imgContainer}>
-                        <img src={`/letters/${letter}.png`} alt={`letter ${letter} sign`} />
-                    </div>
-                </div>
+                    <img className={styles.signPic}src={`/letters/${letter}.png`} alt={`letter ${letter} sign`} />
+                </>
                 }
             </div>
         </>

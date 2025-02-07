@@ -1,8 +1,9 @@
-.container {
+.lessonContainer {
     display: flex;
-    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
 }
-
 .controlContainer {
     display: flex;
     flex-direction: column;
@@ -12,11 +13,9 @@
     position: relative;
 }
 
-.imgContainer {
-    width: 300px;
-    height: 300px;
-    display: flex;
-    align-items: center;
+.signPic {
+    width: 200px;
+    height: 200px;
 }
 
 .header {

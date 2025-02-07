@@ -5,14 +5,8 @@ import Webcam from 'react-webcam'
 import { FaLightbulb } from "react-icons/fa"; 
 import axios from 'axios';
 
-export default function Cam({ capturing, setCapturing, evaluateCallback, correct, withHint = true, useML = true }) {
-
-    // Correct states: null, correct, wrong, hint
-    const [hint, setHint] = useState('');
-
+export default function Cam({ capturing, setCapturing, setDetectedLetter, correct, hint, hintButtonHandler, useML=true }) {
     // Timer and interval states
-    // const [timeoutId, setTimeoutId] = useState(null);
-    const [hintTimeoutId, setHintTimeoutId] = useState(null);
     const [intervalId, setIntervalId] = useState(null);
 
     // Webcam reference and video constraints
@@ -25,46 +19,9 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
         height: 480
     };
 
-    // Placeholder function for CV model API
-    const evaluate = (detectedLetter) => {
-        evaluateCallback(detectedLetter);
-        if (withHint) {
-            if (detectedLetter) {
-                clearHintTimer();
-                setHint('');
-            } else {
-                if (hint == '') startHintTimer();
-            }
-        }
-    };
-
-    const startHintTimer = () => {
-        if (!hintTimeoutId) {
-            let timeout = setTimeout(() => {
-                if (hint == '') setHint('button');
-                // setFeedback('hint');
-                console.log('Hint button should now be visible.');
-            }, 5000);
-            setHintTimeoutId(timeout);
-        }
-    };
-
-    const clearHintTimer = () => {
-        clearTimeout(hintTimeoutId);
-        setHintTimeoutId(null);
-    };
-
-    const handleHintClick = () => {
-        setHint('picture');
-        
-    };
-
     const handleWebcamMount = () => {
-        if (withHint) {
-            startHintTimer();
-        }
         handleStartCapture();
-    };
+    }
 
     const handleStartCapture = useCallback(async () => {
         const video = webcamRef.current.video;
@@ -132,8 +89,8 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
             });
 
             console.log("Server Response:", response.data);
-            // load respnse object
-
+            
+            // load response object
             const modelResponse = response.data;
             var majorityLetter = modelResponse["majority_letter"];
 
@@ -141,7 +98,7 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
             if (majorityLetter === null) {
                 return null;
             } else { 
-                evaluate(majorityLetter);
+                setDetectedLetter(majorityLetter);
                 // return modelResponse["normalized_coords"] // do later
                 return null
             }
@@ -158,23 +115,30 @@ export default function Cam({ capturing, setCapturing, evaluateCallback, correct
     }, [webcamRef, setCapturing]);
 
     return (
-            <div className={styles.cam} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'white' }}>
-                {capturing && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} style={{borderRadius: "20px" }}/>}
-                <div className={styles.feedbackContainer}>
-                    {correct && <div className={styles.feedback} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'black' }}>{correct == "correct" ? 'Awesome, you got it!' : 'Not quite!'}</div>}
-                    {hint && hint == 'button' && <button className={styles.hintBtn} onClick={handleHintClick}>
-                        <FaLightbulb />Hint!</button>
-                    }
-                </div>
+        <div className={styles.cam} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'white' }}>
+            {capturing && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} style={{borderRadius: "20px" }}/>}
+            <div className={styles.feedbackContainer}>
+                {correct && <div
+                    className={styles.feedback}
+                    style={{
+                        borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'black' }}
+                >
+                    {correct == "correct" ? 'Awesome, you got it!' : 'Not quite!'}
+                </div>}
+                {hint && hint == 'button' && <button className={styles.hintBtn} onClick={hintButtonHandler}>
+                    <FaLightbulb />Hint!</button>
+                }
             </div>
+        </div>
     );
 }
 
 Cam.propTypes = {
     capturing: PropTypes.bool.isRequired,
     setCapturing: PropTypes.func,
-    evaluateCallback: PropTypes.func,
+    setDetectedLetter: PropTypes.func,
     correct: PropTypes.string,
-    withHint: PropTypes.bool,
+    hint: PropTypes.string,
+    hintButtonHandler: PropTypes.func,
     useML: PropTypes.bool,
 };

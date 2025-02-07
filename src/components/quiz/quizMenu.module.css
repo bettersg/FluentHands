@@ -8,6 +8,7 @@
     color: var(--color-primary);
     font-size: 3rem;
     text-align: center;
+    font-weight: bold;
 }
 
 .quizMenuSteps {

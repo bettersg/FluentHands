@@ -1,5 +1,4 @@
 import { MdArrowForwardIos } from "react-icons/md";
-import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router'
 import styles from './lessonResults.module.css'
 
@@ -22,8 +21,4 @@ export default function LessonResult() {
 
     </div>
   )
-}
-
-LessonResult.propTypes = {
-  setMode: PropTypes.func.isRequired,
 }

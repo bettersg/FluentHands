@@ -5,3 +5,13 @@
     align-items: start;
     gap: 1rem;
 }
+
+.camContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.hintPic {
+    width: 200px;
+    height: 200px;    
+}

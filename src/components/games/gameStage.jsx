@@ -14,13 +14,17 @@ export default function GamesStage({ setMode }) {
     const [sessionCount, setSessionCount] = useState(0);
     const [stageState, setStageState] = useState('stage');
     
-    const [capturing, setCapturing] = useState(true)
+    const [capturing, setCapturing] = useState(false)
     const [detectedLetter, setDetectedLetter] = useState('')
     const [correct, setCorrect] = useState(null) 
+    // hint states: '', 'button', 'picture'
+    const [hint, setHint] = useState('');
+
     const handleEndGame = () => setMode('end')
     
     // select a new word or end game
     useEffect(() => {
+        console.log(currentWord)
         if (sessionCount > 5) {
             handleEndGame();
             return;
@@ -44,7 +48,7 @@ export default function GamesStage({ setMode }) {
         if (capturing) {
             handleEvalLetter(detectedLetter)
         }
-    }, [currentWord, usedWords, wordList, sessionCount, detectedLetter, currentLetterIndex]);
+    }, [currentWord, usedWords, wordList, sessionCount, detectedLetter, currentLetterIndex, capturing]);
 
     // mark letter as correct
     const handleMarkCorrect = () => {
@@ -57,7 +61,6 @@ export default function GamesStage({ setMode }) {
         } else {
             setStageState("results");     // current word is complete, show results page
             setCapturing(false)
-            setDetectedLetter('')
         }
     };
 
@@ -69,98 +72,124 @@ export default function GamesStage({ setMode }) {
     };
 
     const handleEvalLetter = (detectedLetter) => {
-        console.log('Detected letter:', detectedLetter, 'Required letter:', currentWord[currentLetterIndex])
-        if (detectedLetter == currentWord[currentLetterIndex]) {
-            setCorrect("correct")
-            setTimeout(() => {
-                setCorrect(null)
-            }, 1000)
-            handleMarkCorrect()
-        } else {
-            if (correct == null) {
-                setCorrect('wrong')
-                handleMarkWrong()
+        if (detectedLetter) {
+            console.log('Detected letter:', detectedLetter, 'Required letter:', currentWord[currentLetterIndex])
+            if (detectedLetter == currentWord[currentLetterIndex]) {
+                setHint('')
+                setCorrect("correct")
+                setTimeout(() => {
+                    setCorrect(null)
+                }, 1000)
+                handleMarkCorrect()
+            } else {
+                if (correct == null) {
+                    setCorrect('wrong')
+                    if (hint == '') setHint('button')
+                    handleMarkWrong()
+                }
             }
         }
     }
 
     // set the next word and go back to the page where the user signs
     const handleNextWord = () => {
+        // Reset display states
+        setCorrect(null)
+        setDetectedLetter('')
+        setHint('')
+        // Reset word
+        setCurrentWord(''); 
         setStageState('stage');
-        setCurrentWord(''); // reset word
         setSessionCount(sessionCount + 1);
         setCapturing(true)
     };
 
     return (
-        <div className={styles.gamesStageWithButton}>
-            {(stageState == "stage") ? (
-                //stage page for one word: where the user signs
-                <>
-                    <div className={styles.gamesStageOverview}>
-                        <h1 className={styles.gamesStageHeader}>
-                            Spell {currentWord}
-                        </h1>
-
-                        <Cam
-                            capturing={capturing}
-                            setCapturing={setCapturing}
-                            correct={correct}
-                            evaluateCallback={setDetectedLetter}
-                        />
-
-                        <div className={styles.gamesStageLettersOverview}>
-                            {currentWord.split('').map((letter, index) => (
-                                <div
-                                    key={index}
-                                    className={
-                                        inputLetters[index]
-                                            ? inputLetters[index] === letter
-                                                ? styles.gamesStageLetterCorrect
-                                                : styles.gamesStageLetterWrong
-                                            : styles.gamesStageLetterEmpty
-                                    }>
-                                    {inputLetters[index] || ''}
-                                </div>
-                            ))}
-                        </div>
+        (stageState == "stage") ? (
+        //stage page for one word: where the user signs
+        <div className={styles.gameStageContainer}>
+            <div className={styles.gamesStage}>
+                <div 
+                    className={styles.gamesStageHeaderContainer}
+                    style={{visibility: capturing ? 'visible' : 'hidden'}}
+                >
+                    <div className={styles.gamesStageButtonContainer}>
                     </div>
-
+                    <h1 className={styles.gamesStageHeader}>
+                        Spell {currentWord}
+                    </h1>
                     <div className={styles.gamesStageButtonContainer}>
                         <button className="button" onClick={() => setStageState("results")}>
                             Skip
                         </button>
                     </div>
-                </>
-            ) : (
-                // results page for one word
-                <div className={styles.gamesResultsWithButton}>
-                    <div className={styles.gamesResultsOverview}>
-                        <h1 className={styles.gamesStageHeader}>
-                            Spell {currentWord}
-                        </h1>
-                        <div className={styles.gamesResultsLettersOverview}>
-                            {currentWord.split('').map((letter, index) => (
-                                <div key={index} className={styles.gamesResultsLetterContainer}>
-                                    <img src={`./letters/${letter}.png`} alt="webcam placeholder" />
-                                    <div
-                                        className={styles.gamesStageLetterCorrect}>
-                                        {letter}
-                                    </div>
-                                </div>
-                            ))}
+                </div>
+                {capturing ? 
+                <>
+                    <div className={styles.camContainer}>
+                        {hint == 'picture' && <div className={styles.hintPic}></div>}
+                        <Cam
+                            capturing={capturing}
+                            setCapturing={setCapturing}
+                            setDetectedLetter={setDetectedLetter}
+                            correct={correct}
+                            hint={hint}
+                            hintButtonHandler={() => setHint('picture')}
+                            useML={true}
+                        />
+                        {hint == 'picture' && <div className={styles.hintPic}>
+                            <img src={`letters/${currentWord[currentLetterIndex]}.png`} alt={`${currentWord[currentLetterIndex]} sign hint`} />
+                        </div>}
+                    </div>
+                    <div className={styles.gamesStageLettersOverview}>
+                        {currentWord.split('').map((letter, index) => (
+                            <div
+                                key={index}
+                                className={
+                                    inputLetters[index]
+                                        ? inputLetters[index] === letter
+                                            ? styles.gamesStageLetterCorrect
+                                            : styles.gamesStageLetterWrong
+                                        : styles.gamesStageLetterEmpty
+                                }>
+                                {inputLetters[index] || ''}
+                            </div>
+                        ))}
+                    </div>
+                </> :
+                <>
+                    <Cam
+                        capturing={true}
+                        useML={false}
+                    />
+                    <button className='button' style={{margin: '0 auto'}} onClick={() => {console.log(capturing); setCapturing(true)}}>I&apos;m ready</button>
+                </>}
+            </div>
+        </div>
+        ) : (
+            // results page for one word
+        <div className={styles.gamesResultsOverview}>
+            <h1 className={styles.gamesStageHeader}>
+                Spell {currentWord}
+            </h1>
+            <div className={styles.gamesResultsLettersOverview}>
+                {currentWord.split('').map((letter, index) => (
+                    <div key={index} className={styles.gamesResultsLetterContainer}>
+                        <img className={styles.gamesResultsLetterImg} src={`./letters/${letter}.png`} alt={`${letter} sign hint`}/>
+                        <div
+                            className={styles.gamesStageLetterCorrect}>
+                            {letter}
                         </div>
                     </div>
-
-                    <div className={styles.gamesResultsButtonContainer}>
-                        <button className="button" onClick={handleNextWord}>
-                            Next
-                        </button>
-                    </div>
-                </div>
-
-            )}
+                ))}
+            </div>
+            <div className={styles.gamesResultsButtonContainer}>
+                <button className="button" onClick={handleNextWord}>
+                    Next
+                </button>
+            </div>
         </div>
+        )
     )
 }
 

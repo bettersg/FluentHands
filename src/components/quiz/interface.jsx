@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react'
 import styles from './interface.module.css'
 
-export default function Interface({points, instruction, handleEndQuiz}) {
+export default function Interface({points, capturing, instruction, handleEndQuiz}) {
     const timeLimitSeconds = 60
     const [minutes, setMinutes] = useState(parseInt(timeLimitSeconds / 60))
     const [seconds, setSeconds] = useState(timeLimitSeconds);
@@ -23,12 +23,14 @@ export default function Interface({points, instruction, handleEndQuiz}) {
     };
 
     useEffect(() => {
-        let interval = setInterval(() => updateTimer(), 100)
-        return () => clearInterval(interval);
-    },[])
+        if (capturing) {
+            let interval = setInterval(() => updateTimer(), 100)
+            return () => clearInterval(interval);
+        }
+    },[capturing])
 
     return (
-        <div className={styles.interface}>
+        <div className={styles.interface} style={{visibility: capturing ? 'visible' : 'hidden'}}>
             <div className={styles.info}>Score: {points}</div>
             <div className={styles.instruction}>{instruction}</div>
             <div className={styles.info}>{minutes}:{seconds}</div>
@@ -38,6 +40,7 @@ export default function Interface({points, instruction, handleEndQuiz}) {
 
 Interface.propTypes = {
     points: PropTypes.number.isRequired,
+    capturing: PropTypes.bool.isRequired,
     instruction: PropTypes.string.isRequired,
     handleEndQuiz: PropTypes.func.isRequired
 }
