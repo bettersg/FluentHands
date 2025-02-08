@@ -63,14 +63,14 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
 
     return (
         <div className={styles.quizContainer}>
-            {<Interface 
-                points={points} 
-                instruction={`Sign '${letter}'`}
-                handleEndQuiz={handleEndQuiz}
-                capturing={capturing}
-            />}
             {capturing ? 
             <>
+                <Interface 
+                    points={points} 
+                    instruction={`Sign '${letter}'`}
+                    handleEndQuiz={handleEndQuiz}
+                    capturing={capturing}
+                />
                 <div className={styles.camContainer}>
                     {hint == 'picture' && <div className={styles.hintPic}></div>}
                     <Cam
@@ -88,6 +88,10 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
                 {showSkip && <button className='button' onClick={handleSkip}>Skip</button>}
             </> : 
             <>
+                <p>
+                    Place your hand in the orange box (your webcam), so it is visible on screen. <br/>
+                    Click the button to begin.
+                </p>
                 <Cam
                     capturing={true}
                     useML={false}

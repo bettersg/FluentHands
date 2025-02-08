@@ -30,7 +30,7 @@ export default function Interface({points, capturing, instruction, handleEndQuiz
     },[capturing])
 
     return (
-        <div className={styles.interface} style={{visibility: capturing ? 'visible' : 'hidden'}}>
+        <div className={styles.interface}>
             <div className={styles.info}>Score: {points}</div>
             <div className={styles.instruction}>{instruction}</div>
             <div className={styles.info}>{minutes}:{seconds}</div>

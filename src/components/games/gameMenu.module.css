@@ -1,7 +1,4 @@
-.gamesMenuWithButton {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.gamesMenuContainer {
     margin: 0 auto;
 }
 
@@ -9,25 +6,30 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin: 0 auto;
-    padding: 20px 20px 20px 20px;
-    border: 1px solid black;
 }
 
 .gamesMenuImg {
-    width: 600px;
+    width: 400px;
+    align-self: center;
+}
+
+.gamesMenuHeaderContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .gamesMenuHeader {
     font-family: var(--md-ref-typeface-brand);
     color: var(--md-sys-color-primary);
-    font-size: 2rem;
+    font-size: 24px;
+    font-weight: 600;
 }
 
 .gamesMenuSubheader {
     font-family: var(--md-ref-typeface-brand);
     color: #919090;
-    font-size: 1.5rem;
+    font-size: 20px;
 }
 
 .gamesMenuText {
@@ -40,4 +42,34 @@
     display: flex;
     justify-content: flex-end;
     margin-top: 20px;
+}
+
+/* instructions */
+.gamesInstructionsMenu {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.gamesInstructionsHeader {
+    color: var(--color-primary);
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.gamesInstructionsContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 1rem;
+}
+
+.gamesInstructionsSubheading {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.gamesInstructionsText {
+    padding: 0px 18px;
 }

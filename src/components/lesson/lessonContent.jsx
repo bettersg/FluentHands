@@ -34,6 +34,15 @@ const defaultDone = {
     'Z': false,
 }
 
+// Check if all letter is true
+export const checkAllDone = () => {
+    const storedDone = localStorage.getItem('fluentHands');
+    if (storedDone) {
+        return Object.values(JSON.parse(storedDone)).every(value => value === true);
+    }
+    return false
+};
+
 export default function LessonContent({ mode, setMode }) {
     
     const navigate = useNavigate();
@@ -51,11 +60,6 @@ export default function LessonContent({ mode, setMode }) {
         const storedDone = localStorage.getItem('fluentHands');
         return storedDone ? JSON.parse(storedDone) : defaultDone;
       });
-
-    // Check if all letter is true
-    const checkAllDone = () => {
-        return Object.values(done).every(value => value === true);
-    };
 
     useEffect(() => {
         if (mode != 'lesson') {

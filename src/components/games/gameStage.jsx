@@ -109,23 +109,21 @@ export default function GamesStage({ setMode }) {
         //stage page for one word: where the user signs
         <div className={styles.gameStageContainer}>
             <div className={styles.gamesStage}>
-                <div 
-                    className={styles.gamesStageHeaderContainer}
-                    style={{visibility: capturing ? 'visible' : 'hidden'}}
-                >
-                    <div className={styles.gamesStageButtonContainer}>
-                    </div>
-                    <h1 className={styles.gamesStageHeader}>
-                        Spell {currentWord}
-                    </h1>
-                    <div className={styles.gamesStageButtonContainer}>
-                        <button className="button" onClick={() => setStageState("results")}>
-                            Skip
-                        </button>
-                    </div>
-                </div>
+                
                 {capturing ? 
                 <>
+                    <div className={styles.gamesStageHeaderContainer}>
+                        <div className={styles.gamesStageButtonContainer}>
+                        </div>
+                        <h1 className={styles.gamesStageHeader}>
+                            Spell {currentWord}
+                        </h1>
+                        <div className={styles.gamesStageButtonContainer}>
+                            <button className="button" onClick={() => setStageState("results")}>
+                                Skip
+                            </button>
+                        </div>
+                    </div>
                     <div className={styles.camContainer}>
                         {hint == 'picture' && <div className={styles.hintPic}></div>}
                         <Cam
@@ -158,6 +156,10 @@ export default function GamesStage({ setMode }) {
                     </div>
                 </> :
                 <>
+                    <p>
+                        Place your hand in the orange box (your webcam), so it is visible on screen. <br/>
+                        Click the button to begin.
+                    </p>
                     <Cam
                         capturing={true}
                         useML={false}

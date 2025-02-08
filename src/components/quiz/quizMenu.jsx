@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import styles from './quizMenu.module.css'
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { VscTriangleRight } from 'react-icons/vsc';
 
 function QuizMenu({setMode}) {
     const handleStartQuiz = () => setMode('play')
@@ -22,7 +22,7 @@ function QuizMenu({setMode}) {
             </div>
             <div className={styles.quizMenuButtonContainer}>
                 <button className='button' onClick={handleStartQuiz}>
-                    <MdOutlineKeyboardArrowRight/>Start Quiz
+                    <VscTriangleRight />Start Quiz
                 </button>
             </div>
         </div>

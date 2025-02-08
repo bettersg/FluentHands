@@ -5,6 +5,7 @@ import QuizPlay from "../components/quiz/quizPlay"
 import QuizResults from "../components/quiz/quizResults"
 import Dialogue from "../components/dialogue"
 import { useNavigate } from "react-router"
+import { checkAllDone } from "../components/lesson/lessonContent"
 // import styles from './quiz.module.css'
 
 export default function Quiz() {
@@ -27,7 +28,7 @@ export default function Quiz() {
     return (
     <>
         <Header/>
-        {promptMsg && <Dialogue {...dialogueProps}/>}
+        {!checkAllDone() && promptMsg && <Dialogue {...dialogueProps}/>}
         {quizMode == 'menu' && <QuizMenu setMode={setQuizMode}/>}
         {(quizMode == 'play') && <QuizPlay mode={quizMode} setMode={setQuizMode} points={points} incrementPoints={incrementPoints}/>}
         {quizMode == 'results' && <QuizResults setMode={setQuizMode} points={points} setPoints={setPoints}/>}
