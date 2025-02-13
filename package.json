@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@esbuild/darwin-arm64": "^0.25.0",
+    "@mediapipe/tasks-vision": "^0.10.21",
+    "@rollup/rollup-darwin-arm64": "^4.34.6",
     "axios": "^1.7.9",
     "firebase": "^11.2.0",
     "prop-types": "^15.8.1",

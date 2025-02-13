@@ -4,6 +4,8 @@ import { useCallback, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
 import { FaLightbulb } from "react-icons/fa"; 
 import axios from 'axios';
+import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
+import hand_landmarker_task from "../models/hand_landmarker.task";
 
 export default function Cam({ capturing, setCapturing, setDetectedLetter, correct, hint, hintButtonHandler, useML=true }) {
     // Timer and interval states
@@ -26,6 +28,23 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
     const handleStartCapture = useCallback(async () => {
         const video = webcamRef.current.video;
         const stream = webcamRef.current.stream;
+
+        // load model
+        let handLandmarker;
+        let animationFrameId;
+
+        const vision = await FilesetResolver.forVisionTasks(
+            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
+        );
+        handLandmarker = await HandLandmarker.createFromOptions(
+            vision, {
+                baseOptions: { modelAssetPath: hand_landmarker_task },
+                numHands: 2,
+                runningMode: "video"
+            }
+        );
+
+        console.log("Hand Landmarker model loaded");
     
         const interval = setInterval(async () => {
             if (stream.active && video.readyState >= 2) {
@@ -34,6 +53,10 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
     
                 const width = video.videoWidth;
                 const height = video.videoHeight;
+
+                // send to model
+                const detections = handLandmarker.detectForVideo(video, performance.now());
+                console.log("Detections:", detections);
     
                 if (width > 0 && height > 0) {
                     canvas.width = width;
