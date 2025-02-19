@@ -1,10 +1,10 @@
 import Cam from '../cam'
 import Interface from './interface'
-import PropTypes from 'prop-types'
+import { func, number } from 'prop-types'
 import { useEffect, useState } from 'react'
 import styles from './quizPlay.module.css'
 
-export default function QuizPlay({setMode, points, incrementPoints}) {
+export default function QuizPlay({setMode, setSkippedLetters, points, incrementPoints}) {
 
     const letters = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','U','V','W','X','Y']
     const generateLetter = (prevLetter=" ") => {
@@ -57,6 +57,10 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
 
     const handleSkip = () => {
         setHint('')
+        setSkippedLetters((skippedLetters)=>{
+            skippedLetters.add(letter)
+            return skippedLetters
+        })
         setLetter(generateLetter(letter))
         setShowSkip(false)
     }
@@ -96,14 +100,15 @@ export default function QuizPlay({setMode, points, incrementPoints}) {
                     capturing={true}
                     useML={false}
                 />
-                <button className='button' style={{margin: '0 auto'}} onClick={() => setCapturing(true)}>I&apos;m ready</button>
+                <button className='button' onClick={() => setCapturing(true)}>I&apos;m ready</button>
             </>}
         </div>
   )
 }
 
 QuizPlay.propTypes = {
-    setMode: PropTypes.func.isRequired,
-    points: PropTypes.number.isRequired,
-    incrementPoints: PropTypes.func.isRequired,
+    setMode: func.isRequired,
+    setSkippedLetters: func.isRequired,
+    points: number.isRequired,
+    incrementPoints: func.isRequired,
 }
