@@ -164,7 +164,7 @@ export default function GamesStage({ setMode }) {
                         capturing={true}
                         useML={false}
                     />
-                    <button className='button' style={{margin: '0 auto'}} onClick={() => {console.log(capturing); setCapturing(true)}}>I&apos;m ready</button>
+                    <button className='button' style={{margin: '0 auto'}} onClick={() => setCapturing(true)}>I&apos;m ready</button>
                 </>}
             </div>
         </div>
