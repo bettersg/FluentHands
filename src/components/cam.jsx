@@ -12,7 +12,6 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 export default function Cam({ capturing, setCapturing, setDetectedLetter, correct, hint, hintButtonHandler, useML=true }) {
     // Timer and interval states
     const [intervalId, setIntervalId] = useState(null);
-    const [showWebcam, setShowWebcam] = useState(true); // New state to control webcam visibility
     const [imageSrc, setImageSrc] = useState(null); // State to hold the image source
 
     // Webcam reference and video constraints
@@ -72,8 +71,8 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                 // Optionally, you can still draw keypoints if needed
                 if (detections.landmarks.length > 0) {
                     // Draw the landmarks as light red circles
-                    detections.landmarks.forEach((landmark) => {
-                        landmark.forEach((point) => {
+                    detections.landmarks.forEach((landmarks) => {
+                        landmarks.forEach((point) => {
                             const [x, y] = [point["x"] * canvas.width, point["y"] * canvas.height];
                             console.log("x:", x, "y:", y);
                             ctx.beginPath();
@@ -81,22 +80,22 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                             ctx.fillStyle = "orange"; // Light red color
                             ctx.fill();
                         });
-                    });
-        
-                    // Draw the connections between the landmarks in light green
-                    HAND_CONNECTIONS.forEach(([startIdx, endIdx]) => {
-                        const start = detections.landmarks[0][startIdx];
-                        const end = detections.landmarks[0][endIdx];
-                        if (start && end) {
-                            const [x1, y1] = [start["x"] * canvas.width, start["y"] * canvas.height];
-                            const [x2, y2] = [end["x"] * canvas.width, end["y"] * canvas.height];
-                            ctx.beginPath();
-                            ctx.moveTo(x1, y1);
-                            ctx.lineTo(x2, y2);
-                            ctx.strokeStyle = "lime"; // Light green color
-                            ctx.lineWidth = 2;
-                            ctx.stroke();
-                        }
+                    
+                        // Draw the connections between the landmarks in light green for each hand
+                        HAND_CONNECTIONS.forEach(([startIdx, endIdx]) => {
+                            const start = landmarks[startIdx];
+                            const end = landmarks[endIdx];
+                            if (start && end) {
+                                const [x1, y1] = [start["x"] * canvas.width, start["y"] * canvas.height];
+                                const [x2, y2] = [end["x"] * canvas.width, end["y"] * canvas.height];
+                                ctx.beginPath();
+                                ctx.moveTo(x1, y1);
+                                ctx.lineTo(x2, y2);
+                                ctx.strokeStyle = "lime"; // Light green color
+                                ctx.lineWidth = 2;
+                                ctx.stroke();
+                            }
+                        });
                     });
                 }
 
@@ -106,7 +105,6 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
         }, 100); // Update every 100ms
 
         setIntervalId(interval);
-        setShowWebcam(false); // Hide the webcam when starting capture
     }, [webcamRef]);
 
     const sendFrames = async (frames) => {
