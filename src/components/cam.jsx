@@ -71,19 +71,19 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
 
                 // Optionally, you can still draw keypoints if needed
                 if (detections.landmarks.length > 0) {
-                    // Draw the landmarks as red circles
+                    // Draw the landmarks as light red circles
                     detections.landmarks.forEach((landmark) => {
                         landmark.forEach((point) => {
                             const [x, y] = [point["x"] * canvas.width, point["y"] * canvas.height];
                             console.log("x:", x, "y:", y);
                             ctx.beginPath();
                             ctx.arc(x, y, 5, 0, 2 * Math.PI); // Draw circle at each point
-                            ctx.fillStyle = "red";
+                            ctx.fillStyle = "orange"; // Light red color
                             ctx.fill();
                         });
                     });
         
-                    // Draw the connections between the landmarks
+                    // Draw the connections between the landmarks in light green
                     HAND_CONNECTIONS.forEach(([startIdx, endIdx]) => {
                         const start = detections.landmarks[0][startIdx];
                         const end = detections.landmarks[0][endIdx];
@@ -93,7 +93,7 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                             ctx.beginPath();
                             ctx.moveTo(x1, y1);
                             ctx.lineTo(x2, y2);
-                            ctx.strokeStyle = "green"; // Connection color
+                            ctx.strokeStyle = "lime"; // Light green color
                             ctx.lineWidth = 2;
                             ctx.stroke();
                         }
