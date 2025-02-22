@@ -6,6 +6,8 @@ import { FaLightbulb } from "react-icons/fa";
 import axios from 'axios';
 import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
 import hand_landmarker_task from "../models/hand_landmarker.task";
+import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
+
 
 export default function Cam({ capturing, setCapturing, setDetectedLetter, correct, hint, hintButtonHandler, useML=true }) {
     // Timer and interval states
@@ -45,6 +47,13 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
         );
 
         console.log("Hand Landmarker model loaded");
+        const HAND_CONNECTIONS = [
+            [0, 1], [1, 2], [2, 3], [3, 4],  // Thumb
+            [0, 5], [5, 6], [6, 7], [7, 8],  // Index
+            [0, 9], [9, 10], [10, 11], [11, 12],  // Middle
+            [0, 13], [13, 14], [14, 15], [15, 16],  // Ring
+            [0, 17], [17, 18], [18, 19], [19, 20]  // Pinky
+        ];
 
         const interval = setInterval(async () => {
             if (stream.active && video.readyState >= 2) {
@@ -62,15 +71,32 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
 
                 // Optionally, you can still draw keypoints if needed
                 if (detections.landmarks.length > 0) {
+                    // Draw the landmarks as red circles
                     detections.landmarks.forEach((landmark) => {
                         landmark.forEach((point) => {
-                            const [x, y] = [point["x"] * canvas.width, point["y"] * canvas.height]; // Scale to canvas
+                            const [x, y] = [point["x"] * canvas.width, point["y"] * canvas.height];
                             console.log("x:", x, "y:", y);
                             ctx.beginPath();
                             ctx.arc(x, y, 5, 0, 2 * Math.PI); // Draw circle at each point
                             ctx.fillStyle = "red";
                             ctx.fill();
                         });
+                    });
+        
+                    // Draw the connections between the landmarks
+                    HAND_CONNECTIONS.forEach(([startIdx, endIdx]) => {
+                        const start = detections.landmarks[0][startIdx];
+                        const end = detections.landmarks[0][endIdx];
+                        if (start && end) {
+                            const [x1, y1] = [start["x"] * canvas.width, start["y"] * canvas.height];
+                            const [x2, y2] = [end["x"] * canvas.width, end["y"] * canvas.height];
+                            ctx.beginPath();
+                            ctx.moveTo(x1, y1);
+                            ctx.lineTo(x2, y2);
+                            ctx.strokeStyle = "green"; // Connection color
+                            ctx.lineWidth = 2;
+                            ctx.stroke();
+                        }
                     });
                 }
 
