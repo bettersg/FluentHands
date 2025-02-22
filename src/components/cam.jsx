@@ -55,7 +55,6 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                // Update the image source with the canvas data
 
                 // Detect landmarks regardless of whether they are present
                 const detections = handLandmarker.detectForVideo(video, performance.now());
@@ -75,7 +74,8 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                     });
                 }
 
-                setImageSrc(canvas.toDataURL("image/png"));
+                // Update the image source with the canvas data
+                setImageSrc(canvas.toDataURL("image/jpeg"));
             }
         }, 100); // Update every 100ms
 
@@ -119,9 +119,37 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
 
     return (
         <div className={styles.cam} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'white' }}>
-            {!showWebcam && imageSrc && <img src={imageSrc} alt="Landmarks" style={{ borderRadius: "20px", display: 'block', margin: '0 auto' }} />}
-            <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} style={{borderRadius: "20px", display: 'block', width:"0px", height:"0px"}}/>
+
+            <Webcam
+                videoConstraints={videoConstraints}
+                ref={webcamRef}
+                onUserMedia={handleWebcamMount}
+                style={{
+                borderRadius: "20px",
+                position: "relative",
+                top: 0,
+                left: 0,
+                zIndex: -1,
+                width: "0%",
+                height: "0%"
+                }}
+            />
+
             <div className={styles.feedbackContainer}>
+            {imageSrc && (
+                    <img
+                        src={imageSrc}
+                        alt="Landmarks"
+                        style={{
+                            borderRadius: "20px",
+                            objectFit: "cover",
+                            zIndex: 1000,
+                            position: "relative",
+                            top: 0,
+                            left: 0
+                        }}
+                        />
+                    )}
                 {correct && <div
                     className={styles.feedback}
                     style={{
