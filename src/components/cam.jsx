@@ -11,30 +11,11 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
     // Timer and interval states
     const [intervalId, setIntervalId] = useState(null);
     const [showWebcam, setShowWebcam] = useState(true); // New state to control webcam visibility
-    const canvasRef = useRef(null); // Reference for the new canvas
+    const [imageSrc, setImageSrc] = useState(null); // State to hold the image source
 
     // Webcam reference and video constraints
     const webcamRef = useRef();
     const frameBufferRef = useRef([]); // Buffer to store frames
-    const [onnxSession, setOnnxSession] = useState(null); // Store ONNX model session
-
-    useEffect(() => {
-        const loadOnnxModel = async () => {
-            try {
-                const response = await fetch('/models/hand_keypoints_classifier.onnx');
-                if (!response.ok) {
-                    throw new Error('Failed to load ONNX model');
-                }
-                const modelArrayBuffer = await response.arrayBuffer();
-                const session = await ort.InferenceSession.create(modelArrayBuffer, {executionProviders: ['cpu']}); 
-                setOnnxSession(session);
-                console.log("ONNX model loaded.");
-            } catch (error) {
-                console.error("Error loading ONNX model:", error);
-            }
-        };
-        loadOnnxModel();
-    }, []);
 
     const videoConstraints = {
         facingMode: 'user',
@@ -65,39 +46,27 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
 
         console.log("Hand Landmarker model loaded");
 
-        const classifyLandmarks = async (landmarks) => {
-            try {
-                const inputTensor = new ort.Tensor("float32", new Float32Array(landmarks), [1, 42]);
-                const outputs = await onnxSession.run({ input: inputTensor });
-                const predictions = outputs.output.data; 
-                console.log("ONNX Prediction:", predictions);
-            } catch (error) {
-                console.error("Error running ONNX inference:", error);
-            }
-        };
-
         const interval = setInterval(async () => {
             if (stream.active && video.readyState >= 2) {
+                // Always capture the current frame from the video stream
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Update the image source with the canvas data
+
+                // Detect landmarks regardless of whether they are present
                 const detections = handLandmarker.detectForVideo(video, performance.now());
                 console.log("Detections:", detections);
 
+                // Optionally, you can still draw keypoints if needed
                 if (detections.landmarks.length > 0) {
-                    const flattenedLandmarks = detections.landmarks[0].flat(); // Extract first hand landmarks
-
-                    if (flattenedLandmarks.length === 42 && onnxSession) {
-                        classifyLandmarks(flattenedLandmarks);
-                    } else {
-                        console.warn("Skipping frame: Landmarks are not complete.");
-                    }
-
-                    // Draw landmarks on the canvas
-                    const canvas = canvasRef.current;
-                    const ctx = canvas.getContext('2d');
-                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas before drawing
-
                     detections.landmarks.forEach((landmark) => {
                         landmark.forEach((point) => {
-                            const [x, y] = [point[0] * canvas.width, point[1] * canvas.height]; // Scale to canvas
+                            const [x, y] = [point["x"] * canvas.width, point["y"] * canvas.height]; // Scale to canvas
+                            console.log("x:", x, "y:", y);
                             ctx.beginPath();
                             ctx.arc(x, y, 5, 0, 2 * Math.PI); // Draw circle at each point
                             ctx.fillStyle = "red";
@@ -105,6 +74,8 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                         });
                     });
                 }
+
+                setImageSrc(canvas.toDataURL("image/png"));
             }
         }, 100); // Update every 100ms
 
@@ -148,8 +119,8 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
 
     return (
         <div className={styles.cam} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'white' }}>
-            {!showWebcam && <canvas ref={canvasRef} width={640} height={480} style={{ borderRadius: "20px", display: 'block', margin: '0 auto' }} />}
-            {showWebcam && <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} style={{borderRadius: "20px", display: 'block', margin: '0 auto' }}/>}
+            {!showWebcam && imageSrc && <img src={imageSrc} alt="Landmarks" style={{ borderRadius: "20px", display: 'block', margin: '0 auto' }} />}
+            <Webcam videoConstraints={videoConstraints} ref={webcamRef} onUserMedia={handleWebcamMount} style={{borderRadius: "20px", display: 'block', width:"0px", height:"0px"}}/>
             <div className={styles.feedbackContainer}>
                 {correct && <div
                     className={styles.feedback}
