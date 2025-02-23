@@ -9,46 +9,21 @@ import hand_landmarker_task from "../models/hand_landmarker.task";
 import hand_keypoints_classifier from "../models/hand_keypoints_classifier.onnx"
 import { InferenceSession, Tensor } from "onnxruntime-web";
 
+
 export default function Cam({ capturing, setCapturing, setDetectedLetter, correct, hint, hintButtonHandler, useML=true }) {
     // Timer and interval states
     const [intervalId, setIntervalId] = useState(null);
     const [imageSrc, setImageSrc] = useState(null); // State to hold the image source
-    const [session, setSession] = useState(null);
+    async function runKeypointClassifier(onnxSession, keypoints) {
 
-    useEffect(() => {
-        const loadOnnxModel = async () => {
-            try {
-                const onnxSession = await InferenceSession.create(hand_keypoints_classifier, {
-                    executionProviders: ["webgl"], 
-                });
-                console.log("ONNX model loaded", onnxSession);
-                setSession(onnxSession);
-
-                // Example input (adjust based on your model)
-                const inputData = new Float32Array([0.759, 0.506, 0.023, 0.914, 0.974, 0.674, 0.235, 0.614, 0.796, 0.272, 0.844, 0.361, 0.285, 0.065, 0.938, 0.924, 0.843, 0.096, 0.048, 0.372, 0.878, 0.287, 0.493, 0.604, 0.749, 0.561, 0.426, 0.218, 0.232, 0.960, 0.124, 0.714, 0.814, 0.757, 0.513, 0.408, 0.012, 0.171, 0.561, 0.467, 0.054, 0.954]);
-
-                // Ensure input shape matches what the model expects (e.g., [1, 42])
-                const inputTensor = new Tensor("float32", inputData, [1, 42]);
-
-                // 🔹 Get the first input name dynamically
-                const inputName = onnxSession.inputNames[0];
-                console.log("Model input name:", inputName);
-
-                // Create feeds object
-                const feeds = { [inputName]: inputTensor };
-
-                // Run the model
-                const output = await onnxSession.run(feeds);
-                console.log("ONNX Model Output:", output);
-
-            } catch (error) {
-                console.error("Error loading ONNX model:", error);
-            }
-        };
-
-        loadOnnxModel();
-    }, []); // Runs only once when the component mounts
-
+        let inputData = new Float32Array(keypoints);
+        const inputTensor = new Tensor("float32", inputData, [1, 42]);
+        const inputName = onnxSession.inputNames[0];
+        const feeds = { [inputName]: inputTensor };
+        const output = await onnxSession.run(feeds);
+        console.log("ONNX Model Output:", output);
+        return output;
+    }
 
     // Webcam reference and video constraints
     const webcamRef = useRef();
@@ -80,6 +55,9 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                 runningMode: "video"
             }
         );
+        const session = await InferenceSession.create(hand_keypoints_classifier, {
+            executionProviders: ["webgl"], 
+        });
 
         console.log("Hand Landmarker model loaded");
         const HAND_CONNECTIONS = [
@@ -106,6 +84,16 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
 
                 // Optionally, you can still draw keypoints if needed
                 if (detections.landmarks.length > 0) {
+                    // send to model
+                    const keypoints = detections.landmarks[0].map((point) => [point.x, point.y]).flat();
+                    const output = await runKeypointClassifier(session, keypoints);
+                    console.log("Model Output:", output);
+                    // get the max index of this array as the letter
+                    const maxIndex = output.output.cpuData.indexOf(Math.max(...output.output.cpuData));
+                    console.log("Max Index:", maxIndex);
+                    const letter = String.fromCharCode(maxIndex + 65);
+                    console.log("Detected Letter:", letter);
+                    setDetectedLetter(letter);
                     // Draw the landmarks as light red circles
                     detections.landmarks.forEach((landmarks) => {
                         landmarks.forEach((point) => {
@@ -142,34 +130,6 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
 
         setIntervalId(interval);
     }, [webcamRef]);
-
-    const sendFrames = async (frames) => {
-        const formData = new FormData();
-        frames.forEach((blob, i) => {
-            formData.append("files", blob, `frame_${i}.jpg`);
-        });
-
-        try {
-            const response = await axios.post("https://tfosr-ml.onrender.com/predict", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-
-            console.log("Server Response:", response.data);
-            const modelResponse = response.data;
-            var majorityLetter = modelResponse["majority_letter"];
-
-            if (majorityLetter === null) {
-                return null;
-            } else { 
-                setDetectedLetter(majorityLetter);
-                return null;
-            }
-        } catch (error) {
-            console.error("Error sending batch:", error.response?.data || error.message);
-        }
-    };
 
     const handleStopCapture = useCallback(() => {
         setCapturing(false);

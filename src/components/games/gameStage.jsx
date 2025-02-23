@@ -161,6 +161,9 @@ export default function GamesStage({ setMode }) {
                         Click the button to begin.
                     </p>
                     <Cam
+                        setDetectedLetter={() => {}}
+                        setCorrect={() => {}}
+                        setHint={() => {}}
                         capturing={true}
                         useML={false}
                     />
