@@ -6,13 +6,49 @@ import { FaLightbulb } from "react-icons/fa";
 import axios from 'axios';
 import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
 import hand_landmarker_task from "../models/hand_landmarker.task";
-import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
-
+import hand_keypoints_classifier from "../models/hand_keypoints_classifier.onnx"
+import { InferenceSession, Tensor } from "onnxruntime-web";
 
 export default function Cam({ capturing, setCapturing, setDetectedLetter, correct, hint, hintButtonHandler, useML=true }) {
     // Timer and interval states
     const [intervalId, setIntervalId] = useState(null);
     const [imageSrc, setImageSrc] = useState(null); // State to hold the image source
+    const [session, setSession] = useState(null);
+
+    useEffect(() => {
+        const loadOnnxModel = async () => {
+            try {
+                const onnxSession = await InferenceSession.create(hand_keypoints_classifier, {
+                    executionProviders: ["webgl"], 
+                });
+                console.log("ONNX model loaded", onnxSession);
+                setSession(onnxSession);
+
+                // Example input (adjust based on your model)
+                const inputData = new Float32Array([0.759, 0.506, 0.023, 0.914, 0.974, 0.674, 0.235, 0.614, 0.796, 0.272, 0.844, 0.361, 0.285, 0.065, 0.938, 0.924, 0.843, 0.096, 0.048, 0.372, 0.878, 0.287, 0.493, 0.604, 0.749, 0.561, 0.426, 0.218, 0.232, 0.960, 0.124, 0.714, 0.814, 0.757, 0.513, 0.408, 0.012, 0.171, 0.561, 0.467, 0.054, 0.954]);
+
+                // Ensure input shape matches what the model expects (e.g., [1, 42])
+                const inputTensor = new Tensor("float32", inputData, [1, 42]);
+
+                // 🔹 Get the first input name dynamically
+                const inputName = onnxSession.inputNames[0];
+                console.log("Model input name:", inputName);
+
+                // Create feeds object
+                const feeds = { [inputName]: inputTensor };
+
+                // Run the model
+                const output = await onnxSession.run(feeds);
+                console.log("ONNX Model Output:", output);
+
+            } catch (error) {
+                console.error("Error loading ONNX model:", error);
+            }
+        };
+
+        loadOnnxModel();
+    }, []); // Runs only once when the component mounts
+
 
     // Webcam reference and video constraints
     const webcamRef = useRef();
@@ -66,7 +102,7 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
 
                 // Detect landmarks regardless of whether they are present
                 const detections = handLandmarker.detectForVideo(video, performance.now());
-                console.log("Detections:", detections);
+                // console.log("Detections:", detections);
 
                 // Optionally, you can still draw keypoints if needed
                 if (detections.landmarks.length > 0) {
@@ -74,7 +110,7 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                     detections.landmarks.forEach((landmarks) => {
                         landmarks.forEach((point) => {
                             const [x, y] = [point["x"] * canvas.width, point["y"] * canvas.height];
-                            console.log("x:", x, "y:", y);
+                            // console.log("x:", x, "y:", y);
                             ctx.beginPath();
                             ctx.arc(x, y, 5, 0, 2 * Math.PI); // Draw circle at each point
                             ctx.fillStyle = "orange"; // Light red color
