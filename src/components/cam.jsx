@@ -17,7 +17,7 @@ const ML_THRESHOLDS = {
   "R": 0, "S": 0, "T": 5, "U": 0, "V": 5, "W": 10, "X": 10, "Y": 5
 };
 
-export default function Cam({ capturing, setCapturing, setDetectedLetter, correct, hint, hintButtonHandler, useML=true }) {
+export default function Cam({ capturing, setCapturing = () => {}, setDetectedLetter = () => {}, correct, hint = '', hintButtonHandler = () => {}, useML=true }) {
     // Timer and interval states
     const [intervalId, setIntervalId] = useState(null);
     const [imageSrc, setImageSrc] = useState(null); // State to hold the image source
