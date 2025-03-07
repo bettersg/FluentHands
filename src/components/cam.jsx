@@ -134,6 +134,8 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
         ];
 
         const interval = setInterval(async () => {
+            console.log("Capturing:", capturing);
+            if (capturing == false) return;
             if (stream.active && video.readyState >= 2) {
                 // Always capture the current frame from the video stream
                 const canvas = document.createElement('canvas');
