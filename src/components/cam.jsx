@@ -10,11 +10,11 @@ import hand_keypoints_classifier from "../models/batched_1741261051.onnx"
 import { InferenceSession, Tensor } from "onnxruntime-web";
 
 // Directly copying from your working code
-const ASCII_UPPERCASE = "ABCDEFGHIKLMNOPQRSTUVWXY";
+const ASCII_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const ML_THRESHOLDS = {
   "A": 10, "B": 15, "C": 20, "D": 0, "E": 5, "F": 10, "G": 15, "H": 10,
-  "I": 0, "K": 10, "L": 5, "M": 5, "N": 5, "O": 0, "P": 10, "Q": 15, 
-  "R": 0, "S": 0, "T": 5, "U": 0, "V": 5, "W": 10, "X": 10, "Y": 5
+  "I": 0, "J": 10, "K": 10, "L": 5, "M": 5, "N": 5, "O": 0, "P": 10, "Q": 15, 
+  "R": 0, "S": 0, "T": 5, "U": 0, "V": 5, "W": 10, "X": 10, "Y": 5, "Z": 10
 };
 
 export default function Cam({ capturing, setCapturing = () => {}, setDetectedLetter = () => {}, correct, hint = '', hintButtonHandler = () => {}, useML=true }) {
@@ -253,7 +253,7 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
             />
 
             <div className={styles.feedbackContainer}>
-            {imageSrc && (
+            {imageSrc && capturing && (
                     <img
                         src={imageSrc}
                         alt="Landmarks"
