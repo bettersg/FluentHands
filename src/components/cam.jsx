@@ -6,23 +6,88 @@ import { FaLightbulb } from "react-icons/fa";
 import axios from 'axios';
 import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
 import hand_landmarker_task from "../models/hand_landmarker.task";
-import hand_keypoints_classifier from "../models/hand_keypoints_classifier.onnx"
+import hand_keypoints_classifier from "../models/batched_1741261051.onnx"
 import { InferenceSession, Tensor } from "onnxruntime-web";
 
+// Directly copying from your working code
+const ASCII_UPPERCASE = "ABCDEFGHIKLMNOPQRSTUVWXY";
+const ML_THRESHOLDS = {
+  "A": 10, "B": 15, "C": 20, "D": 0, "E": 5, "F": 10, "G": 15, "H": 10,
+  "I": 0, "K": 10, "L": 5, "M": 5, "N": 5, "O": 0, "P": 10, "Q": 15, 
+  "R": 0, "S": 0, "T": 5, "U": 0, "V": 5, "W": 10, "X": 10, "Y": 5
+};
 
 export default function Cam({ capturing, setCapturing, setDetectedLetter, correct, hint, hintButtonHandler, useML=true }) {
     // Timer and interval states
     const [intervalId, setIntervalId] = useState(null);
     const [imageSrc, setImageSrc] = useState(null); // State to hold the image source
+    const [letter, setLetter] = useState(null);
+    
+    // Normalized function that EXACTLY matches the Python implementation
+    function normalizeHandLandmarks(landmarks) {
+        // Find min/max values exactly as in Python
+        let minX = Math.min(...landmarks.map(lm => lm.x));
+        let maxX = Math.max(...landmarks.map(lm => lm.x));
+        let minY = Math.min(...landmarks.map(lm => lm.y));
+        let maxY = Math.max(...landmarks.map(lm => lm.y));
+        
+        // Calculate width and height
+        let width = maxX - minX;
+        let height = maxY - minY;
+        
+        // Prevent division by zero
+        if (width === 0) width = 1;
+        if (height === 0) height = 1;
+        
+        // Normalize landmarks using min-max scaling to 0-1 range
+        // This EXACTLY matches the Python implementation
+        return landmarks.map(landmark => ({
+            x: (landmark.x - minX) / width,
+            y: (landmark.y - minY) / height
+        }));
+    }
+    
     async function runKeypointClassifier(onnxSession, keypoints) {
-
-        let inputData = new Float32Array(keypoints);
-        const inputTensor = new Tensor("float32", inputData, [1, 42]);
-        const inputName = onnxSession.inputNames[0];
-        const feeds = { [inputName]: inputTensor };
-        const output = await onnxSession.run(feeds);
-        console.log("ONNX Model Output:", output);
-        return output;
+        console.log("Input keypoints length:", keypoints.length);
+        
+        try {
+            // Create input tensor
+            let inputData = new Float32Array(keypoints);
+            const inputTensor = new Tensor("float32", inputData, [1, 42]);
+            const inputName = onnxSession.inputNames[0];
+            const feeds = { [inputName]: inputTensor };
+            
+            console.log("Running ONNX model inference...");
+            const output = await onnxSession.run(feeds);
+            
+            // Process output
+            const confidences = Array.from(output.output.data);
+            console.log("Confidence scores:", confidences);
+            
+            // Get the max index (matches Python ASCII_UPPERCASE indexing)
+            const maxIndex = confidences.indexOf(Math.max(...confidences));
+            const maxConfidence = confidences[maxIndex];
+            console.log("Max confidence:", maxConfidence, "at index:", maxIndex);
+            
+            // Convert to letter (using ASCII_UPPERCASE to match Python)
+            const detectedLetter = ASCII_UPPERCASE[maxIndex];
+            console.log("Predicted letter:", detectedLetter);
+            
+            // Apply threshold specific to the letter
+            const threshold = ML_THRESHOLDS[detectedLetter] / 100; // Convert threshold to match JS values
+            console.log(`Threshold for ${detectedLetter}: ${threshold}`);
+            
+            if (maxConfidence < threshold) {
+                console.log(`Confidence ${maxConfidence.toFixed(4)} below threshold ${threshold} - prediction unreliable`);
+                return { letter: "-", confidence: maxConfidence, index: maxIndex };
+            } else {
+                console.log(`Confidence ${maxConfidence.toFixed(4)} above threshold ${threshold} - prediction reliable`);
+                return { letter: detectedLetter, confidence: maxConfidence, index: maxIndex };
+            }
+        } catch (error) {
+            console.error("Error running model inference:", error);
+            return null;
+        }
     }
 
     // Webcam reference and video constraints
@@ -51,7 +116,7 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
         handLandmarker = await HandLandmarker.createFromOptions(
             vision, {
                 baseOptions: { modelAssetPath: hand_landmarker_task },
-                numHands: 2,
+                numHands: 1,
                 runningMode: "video"
             }
         );
@@ -77,50 +142,82 @@ export default function Cam({ capturing, setCapturing, setDetectedLetter, correc
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-
-                // Detect landmarks regardless of whether they are present
+                // Detect landmarks
                 const detections = handLandmarker.detectForVideo(video, performance.now());
-                // console.log("Detections:", detections);
 
-                // Optionally, you can still draw keypoints if needed
                 if (detections.landmarks.length > 0) {
-                    // send to model
-                    const keypoints = detections.landmarks[0].map((point) => [point.x, point.y]).flat();
-                    const output = await runKeypointClassifier(session, keypoints);
-                    console.log("Model Output:", output);
-                    // get the max index of this array as the letter
-                    const maxIndex = output.output.cpuData.indexOf(Math.max(...output.output.cpuData));
-                    console.log("Max Index:", maxIndex);
-                    const letter = String.fromCharCode(maxIndex + 65);
-                    console.log("Detected Letter:", letter);
-                    setDetectedLetter(letter);
-                    // Draw the landmarks as light red circles
-                    detections.landmarks.forEach((landmarks) => {
-                        landmarks.forEach((point) => {
-                            const [x, y] = [point["x"] * canvas.width, point["y"] * canvas.height];
-                            // console.log("x:", x, "y:", y);
-                            ctx.beginPath();
-                            ctx.arc(x, y, 5, 0, 2 * Math.PI); // Draw circle at each point
-                            ctx.fillStyle = "orange"; // Light red color
-                            ctx.fill();
-                        });
+                    // Get the raw landmarks
+                    const rawLandmarks = detections.landmarks[0];
                     
-                        // Draw the connections between the landmarks in light green for each hand
-                        HAND_CONNECTIONS.forEach(([startIdx, endIdx]) => {
-                            const start = landmarks[startIdx];
-                            const end = landmarks[endIdx];
-                            if (start && end) {
-                                const [x1, y1] = [start["x"] * canvas.width, start["y"] * canvas.height];
-                                const [x2, y2] = [end["x"] * canvas.width, end["y"] * canvas.height];
-                                ctx.beginPath();
-                                ctx.moveTo(x1, y1);
-                                ctx.lineTo(x2, y2);
-                                ctx.strokeStyle = "lime"; // Light green color
-                                ctx.lineWidth = 2;
-                                ctx.stroke();
-                            }
-                        });
+                    // Apply the Python-matching normalization approach
+                    const normalizedLandmarks = normalizeHandLandmarks(rawLandmarks);
+                    
+                    // Convert to flat array of alternating x,y coordinates
+                    // This is EXACTLY how the working code does it
+                    const keypoints = [];
+                    normalizedLandmarks.forEach(point => {
+                        keypoints.push(point.x);
+                        keypoints.push(point.y);
                     });
+                    
+                    console.log("Normalized Keypoints:", keypoints);
+                    
+                    // Check if we have exactly 42 values (21 points x 2 coordinates)
+                    if (keypoints.length === 42) {
+                        // Use the refactored classification logic
+                        const result = await runKeypointClassifier(session, keypoints);
+                        
+                        if (result) {
+                            console.log("Final prediction:", result.letter, "with confidence:", result.confidence);
+                            
+                            // Only update if we have a valid prediction
+                            if (result.letter !== "-") {
+                                setLetter(result.letter);
+                                setDetectedLetter(result.letter);
+                            }
+                        }
+                    } else {
+                        console.error("Wrong number of keypoints:", keypoints.length);
+                    }
+                    
+                    // Visual debugging: Draw landmarks and connections
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    // Draw the raw landmarks (orange)
+                    rawLandmarks.forEach(point => {
+                        const [x, y] = [point.x * canvas.width, point.y * canvas.height];
+                        ctx.beginPath();
+                        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                        ctx.fillStyle = "orange";
+                        ctx.fill();
+                    });
+                    
+                    // Draw the connections between landmarks
+                    HAND_CONNECTIONS.forEach(([startIdx, endIdx]) => {
+                        const start = rawLandmarks[startIdx];
+                        const end = rawLandmarks[endIdx];
+                        if (start && end) {
+                            const [x1, y1] = [start.x * canvas.width, start.y * canvas.height];
+                            const [x2, y2] = [end.x * canvas.width, end.y * canvas.height];
+                            ctx.beginPath();
+                            ctx.moveTo(x1, y1);
+                            ctx.lineTo(x2, y2);
+                            ctx.strokeStyle = "lime";
+                            ctx.lineWidth = 2;
+                            ctx.stroke();
+                        }
+                    });
+                    
+                    // Add text showing the detected letter
+                    if (letter) {
+                        ctx.font = "48px Arial";
+                        ctx.fillStyle = "white";
+                        ctx.strokeStyle = "black";
+                        ctx.lineWidth = 2;
+                        ctx.strokeText(`Detected: ${letter}`, 20, 50);
+                        ctx.fillText(`Detected: ${letter}`, 20, 50);
+                    }
                 }
 
                 // Update the image source with the canvas data
