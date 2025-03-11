@@ -4,14 +4,13 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
-    ports:
-      - "5173:80"
+      dockerfile: Dockerfile.dev
     volumes:
       - ./:/app
-      - ./build:/build_output  # This will copy the build files to ./build in your project
+      - /app/node_modules  # This volume prevents overwriting node_modules with host directory
+    ports:
+      - "5173:5173"  # Map host to port 5173
     restart: unless-stopped
-    command: sh -c "cp -r /usr/share/nginx/html/* /app/build && nginx -g 'daemon off;'"
     # If you need environment variables:
     # environment:
     #   - NODE_ENV=development

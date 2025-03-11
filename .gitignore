@@ -28,3 +28,4 @@ dist-ssr
 
 #firebase
 .firebase
+build
