@@ -9,9 +9,8 @@ services:
       - "5173:80"
     volumes:
       - ./:/app
-      - ./build:/build_output  # This will copy the build files to ./build in your project
     restart: unless-stopped
-    command: sh -c "cp -r /usr/share/nginx/html/* /app/build && nginx -g 'daemon off;'"
+    command: sh -c "mkdir -p /app/dist && cp -r /usr/share/nginx/html/* /app/dist && nginx -g 'daemon off;'"
     # If you need environment variables:
     # environment:
     #   - NODE_ENV=development
