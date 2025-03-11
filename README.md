@@ -17,28 +17,59 @@ FluentHands is a web application designed to help users learn sign language thro
 - [Docker](https://www.docker.com/get-started) and Docker Compose
 - Webcam (built-in or external)
 
-### Running with Docker
+### Running the App
 
-1. Clone the repository:
+Clone the repository:
    ```bash
    git clone https://github.com/bettersg/FluentHands.git
    cd FluentHands
    ```
 
-2. Start the application in development mode:
-   ```bash
-   docker-compose up
-   ```
+The application can be run in either development or production mode using Docker.
 
-3. Access the application:
-   Open your browser and navigate to [http://localhost:5173](http://localhost:5173)
+#### Development Mode
+Use this mode during development. Changes to your code will be immediately reflected without restarting Docker:
 
-4. To stop the application:
-   ```bash
-   docker-compose down
-   ```
+```bash
+# Build and start the development server
+docker compose -f docker-compose.dev.yml up --build
 
-## Development Setup
+# To run in background
+docker compose -f docker-compose.dev.yml up -d --build
+
+# To stop 
+docker compose -f docker-compose.dev.yml down
+```
+
+Access the application at [http://localhost:5173](http://localhost:5173)
+
+#### Production Mode
+Use this mode to build a production version of the website and test it as a static server:
+
+```bash
+# Build and start the production server
+docker compose up --build
+
+# To run in background
+docker compose up -d --build
+
+# To stop
+docker compose down
+```
+
+Access the application at [http://localhost:5173](http://localhost:5173)
+
+>**Note:** When running in production mode, the compiled build files will be available in the `build/` directory. Any changes made to your code will require re-running the Docker command to see the updates.
+
+### Troubleshooting Docker Setup
+
+If you experience issues with the Docker setup:
+
+- Make sure ports 5173 isn't already in use on your machine
+- The production setup copies the build files to your local machine, making them available in the `build/` directory
+- In development mode, your local files are mounted into the container, allowing for hot-reloading
+
+## Development Setup (without Docker)
 
 If you prefer to run the application without Docker:
 
