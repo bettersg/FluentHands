@@ -134,7 +134,6 @@ export default function LessonContent({ mode, setMode }) {
                             correct={correct}
                             setDetectedLetter={setDetectedLetter}
                             capturing={capturing}
-                            setCapturing={setCapturing}
                             withHint={false}
                         />
                         <div className={styles.buttonContainer}>

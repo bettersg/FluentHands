@@ -128,7 +128,6 @@ export default function GamesStage({ setMode }) {
                         {hint == 'picture' && <div className={styles.hintPic}></div>}
                         <Cam
                             capturing={capturing}
-                            setCapturing={setCapturing}
                             setDetectedLetter={setDetectedLetter}
                             correct={correct}
                             hint={hint}

@@ -79,7 +79,6 @@ export default function QuizPlay({setMode, setSkippedLetters, points, incrementP
                     {hint == 'picture' && <div className={styles.hintPic}></div>}
                     <Cam
                         capturing={capturing}
-                        setCapturing={setCapturing}
                         setDetectedLetter={setDetectedLetter}
                         correct={correct}
                         hint={hint}

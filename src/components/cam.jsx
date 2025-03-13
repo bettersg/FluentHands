@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types'
 import styles from './cam.module.css'
-import { useCallback, useRef, useState, useEffect } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
 import { FaLightbulb } from "react-icons/fa"; 
-import axios from 'axios';
 import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
 import hand_landmarker_task from "../models/hand_landmarker.task";
 import hand_keypoints_classifier from "../models/batched_1741261051.onnx"
@@ -17,7 +16,7 @@ const ML_THRESHOLDS = {
   "R": 0, "S": 0, "T": 5, "U": 0, "V": 5, "W": 10, "X": 10, "Y": 5, "Z": 10
 };
 
-export default function Cam({ capturing, setCapturing = () => {}, setDetectedLetter = () => {}, correct, hint = '', hintButtonHandler = () => {}, useML=true }) {
+export default function Cam({ capturing, setDetectedLetter = () => {}, correct, hint = '', hintButtonHandler = () => {}, useML=true }) {
     // Timer and interval states
     const [intervalId, setIntervalId] = useState(null);
     const [imageSrc, setImageSrc] = useState(null); // State to hold the image source
@@ -48,8 +47,6 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
     }
     
     async function runKeypointClassifier(onnxSession, keypoints) {
-        console.log("Input keypoints length:", keypoints.length);
-        
         try {
             // Create input tensor
             let inputData = new Float32Array(keypoints);
@@ -57,21 +54,17 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
             const inputName = onnxSession.inputNames[0];
             const feeds = { [inputName]: inputTensor };
             
-            console.log("Running ONNX model inference...");
             const output = await onnxSession.run(feeds);
             
             // Process output
             const confidences = Array.from(output.output.data);
-            console.log("Confidence scores:", confidences);
             
-            // Get the max index (matches Python ASCII_UPPERCASE indexing)
+            // Get the max index
             const maxIndex = confidences.indexOf(Math.max(...confidences));
             const maxConfidence = confidences[maxIndex];
-            console.log("Max confidence:", maxConfidence, "at index:", maxIndex);
             
             // Convert to letter (using ASCII_UPPERCASE to match Python)
             const detectedLetter = ASCII_UPPERCASE[maxIndex];
-            console.log("Predicted letter:", detectedLetter);
             
             // Apply threshold specific to the letter
             const threshold = ML_THRESHOLDS[detectedLetter] / 100; // Convert threshold to match JS values
@@ -92,7 +85,6 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
 
     // Webcam reference and video constraints
     const webcamRef = useRef();
-    const frameBufferRef = useRef([]); // Buffer to store frames
 
     const videoConstraints = {
         facingMode: 'user',
@@ -134,7 +126,6 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
         ];
 
         const interval = setInterval(async () => {
-            console.log("Capturing:", capturing);
             if (capturing == false) return;
             if (stream.active && video.readyState >= 2) {
                 // Always capture the current frame from the video stream
@@ -143,6 +134,12 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
                 canvas.height = video.videoHeight;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                if (useML == false){
+                    // Just output the image
+                    setImageSrc(canvas.toDataURL("image/jpeg"));
+                    return;
+                }
 
                 // Detect landmarks
                 const detections = handLandmarker.detectForVideo(video, performance.now());
@@ -161,8 +158,6 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
                         keypoints.push(point.x);
                         keypoints.push(point.y);
                     });
-                    
-                    console.log("Normalized Keypoints:", keypoints);
                     
                     // Check if we have exactly 42 values (21 points x 2 coordinates)
                     if (keypoints.length === 42) {
@@ -230,12 +225,6 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
         setIntervalId(interval);
     }, [webcamRef]);
 
-    const handleStopCapture = useCallback(() => {
-        setCapturing(false);
-        clearInterval(intervalId);
-        setIntervalId(null);
-    }, [webcamRef, setCapturing]);
-
     return (
         <div className={styles.cam} style={{ borderColor: correct ? `var(--color-${correct == "correct" ? "correct": "wrong"})` : 'white' }}>
 
@@ -286,7 +275,6 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
 
 Cam.propTypes = {
     capturing: PropTypes.bool.isRequired,
-    setCapturing: PropTypes.func,
     setDetectedLetter: PropTypes.func,
     correct: PropTypes.string,
     hint: PropTypes.string,
