@@ -15,8 +15,9 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/quiz' element={<Quiz />} />
-        <Route path='/lessons/*' element={<Lessons />} />
-          <Route path=":letter" render={props => <LessonContent {...props} />}/>
+        <Route path='/lessons/*' element={<Lessons />}>
+          <Route path=":letter" element={<LessonContent />} />
+        </Route>
         <Route path='/games' element={<Games />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
