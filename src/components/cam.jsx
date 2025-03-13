@@ -262,7 +262,7 @@ export default function Cam({ capturing, setCapturing = () => {}, setDetectedLet
                         style={{
                             borderRadius: "20px",
                             objectFit: "cover",
-                            zIndex: 1000,
+                            zIndex: 5,
                             position: "relative",
                             top: 0,
                             left: 0
